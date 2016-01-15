@@ -1,6 +1,6 @@
 {
   "name": "angular-ui-scheduler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Angular based UI widget for creating repeat schedule entries.",
   "license": "MIT",
   "ignore": [
@@ -18,7 +18,7 @@
     "lodash": "~3.10.1",
     "bootstrap": "~3.1.1",
     "rrule": "~2.1.0",
-    "moment": "~2.11.1",
+    "moment": ">=2.8.0",
     "moment-timezone": "~0.5.0"
   },
   "devDependencies": {
