@@ -5,7 +5,7 @@
  * @description
  *
  *
- * @restrict A
+ * @restrict E
  * */
 angular.module('angular-ui-scheduler')
     .directive('angularUiScheduler', function () {
