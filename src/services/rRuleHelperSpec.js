@@ -1,4 +1,4 @@
-describe('Service: angular-ui-scheduler.SetRule', function () {
+describe('Service: angular-ui-scheduler.rRuleHelper', function () {
 
     // load the service's module
     beforeEach(module('angular-ui-scheduler'));
@@ -7,8 +7,8 @@ describe('Service: angular-ui-scheduler.SetRule', function () {
     var service;
 
     //update the injection
-    beforeEach(inject(function (_SetRule_) {
-        service = _SetRule_;
+    beforeEach(inject(function (_rRuleHelper_) {
+        service = _rRuleHelper_;
     }));
 
     /**

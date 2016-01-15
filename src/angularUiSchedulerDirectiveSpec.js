@@ -6,7 +6,7 @@ describe('Directive: angular-ui-scheduler.angularUiScheduler', function () {
         scope = $rootScope.$new();
 
         //update to match directive your testing
-        ele = angular.element('<div angularUiScheduler></div>');
+        ele = angular.element('<angular-ui-scheduler></angular-ui-scheduler>');
 
         $compile(ele)(scope);
         scope.$apply();

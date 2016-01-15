@@ -8,7 +8,7 @@
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, angular_ui_scheduler_useTimezone, InRange, GetRule, SetRule) {
+    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, angular_ui_scheduler_useTimezone, rRuleHelper) {
 
         //region defaults
         $scope.frequencyOptions = [
@@ -117,7 +117,7 @@ angular.module('angular-ui-scheduler')
         //endregion
 
 
-        function CreateObject(scope, requireFutureST) {
+        function createObject(scope, requireFutureST) {
             var fn = function () {
 
                 this.scope = scope;
@@ -210,7 +210,7 @@ angular.module('angular-ui-scheduler')
                 // Returns an rrule object
                 this.getRRule = function () {
                     var options = this.getOptions();
-                    return GetRule(options);
+                    return rRuleHelper.getRule(options);
                 };
 
                 // Return object containing schedule name, string representation of rrule per iCalendar RFC,
@@ -227,7 +227,7 @@ angular.module('angular-ui-scheduler')
 
                 this.setRRule = function (rule) {
                     this.clear();
-                    return SetRule(rule, this.scope);
+                    return rRuleHelper.setRule(rule, this.scope);
                 };
 
                 this.setName = function (name) {
@@ -256,10 +256,10 @@ angular.module('angular-ui-scheduler')
                     scope.showRRule = opt;
                 };
             };
-            return new fn();
+             new fn();
         }
 
-        function Init(params) {
+        function init(params) {
 
             var scope = params.scope,
                 requireFutureStartTime = params.requireFutureStartTime || false;
@@ -352,9 +352,9 @@ angular.module('angular-ui-scheduler')
             }
             scope.setDefaults();
 
-            return CreateObject(scope, requireFutureStartTime);
+            return createObject(scope, requireFutureStartTime);
 
         }
 
-        $scope.scheduler = Init({scope: $scope, requireFutureStartTime: false});
+        $scope.scheduler = init({scope: $scope, requireFutureStartTime: false});
     });

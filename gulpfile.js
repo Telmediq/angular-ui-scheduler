@@ -148,7 +148,6 @@ function testPipeFactory(tests, scripts, partials, karmaConfigName) {
                 files = files.concat('bower_components/angular-mocks/angular-mocks.js');
                 files = files.concat('testMock/*Mock.js');
 
-                files = files.concat(paths.dist + paths.partialsOut);
                 if (partials) {
                     files = files.concat(paths.dist + partials);
                 }

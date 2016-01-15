@@ -10,7 +10,7 @@ angular.module('angular-ui-scheduler', [])
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', ["$scope", "$filter", "$log", "angular_ui_scheduler_useTimezone", "InRange", "GetRule", "SetRule", function ($scope, $filter, $log, angular_ui_scheduler_useTimezone, InRange, GetRule, SetRule) {
+    .controller('angularUiSchedulerCtrl', ["$scope", "$filter", "$log", "angular_ui_scheduler_useTimezone", "rRuleHelper", function ($scope, $filter, $log, angular_ui_scheduler_useTimezone, rRuleHelper) {
 
         //region defaults
         $scope.frequencyOptions = [
@@ -119,7 +119,7 @@ angular.module('angular-ui-scheduler')
         //endregion
 
 
-        function CreateObject(scope, requireFutureST) {
+        function createObject(scope, requireFutureST) {
             var fn = function () {
 
                 this.scope = scope;
@@ -212,7 +212,7 @@ angular.module('angular-ui-scheduler')
                 // Returns an rrule object
                 this.getRRule = function () {
                     var options = this.getOptions();
-                    return GetRule(options);
+                    return rRuleHelper.getRule(options);
                 };
 
                 // Return object containing schedule name, string representation of rrule per iCalendar RFC,
@@ -229,7 +229,7 @@ angular.module('angular-ui-scheduler')
 
                 this.setRRule = function (rule) {
                     this.clear();
-                    return SetRule(rule, this.scope);
+                    return rRuleHelper.setRule(rule, this.scope);
                 };
 
                 this.setName = function (name) {
@@ -258,10 +258,10 @@ angular.module('angular-ui-scheduler')
                     scope.showRRule = opt;
                 };
             };
-            return new fn();
+             new fn();
         }
 
-        function Init(params) {
+        function init(params) {
 
             var scope = params.scope,
                 requireFutureStartTime = params.requireFutureStartTime || false;
@@ -354,11 +354,11 @@ angular.module('angular-ui-scheduler')
             }
             scope.setDefaults();
 
-            return CreateObject(scope, requireFutureStartTime);
+            return createObject(scope, requireFutureStartTime);
 
         }
 
-        $scope.scheduler = Init({scope: $scope, requireFutureStartTime: false});
+        $scope.scheduler = init({scope: $scope, requireFutureStartTime: false});
     }]);
 
 /**
@@ -417,370 +417,339 @@ angular.module('angular-ui-scheduler')
     });
 /**
  * @ngdoc service
- * @name angular-ui-scheduler:GetRule
+ * @name angular-ui-scheduler:rRuleHelper
  *
  * @description
  *
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('GetRule',  ["$log", function ($log) {
-        return function (params) {
-            // Convert user inputs to an rrule. Returns rrule object using https://github.com/jkbr/rrule
-            // **list of 'valid values' found below in LoadLookupValues
+    .factory('rRuleHelper', ["angular_ui_scheduler_useTimezone", "$log", "$filter", function (angular_ui_scheduler_useTimezone, $log, $filter) {
+        return {
+            getRule: function (params) {
+                // Convert user inputs to an rrule. Returns rrule object using https://github.com/jkbr/rrule
+                // **list of 'valid values' found below in LoadLookupValues
 
-            var startDate = params.startDate,  // date object or string in yyyy-MM-ddTHH:mm:ss.sssZ format
-                frequency = params.frequency,  // string, optional, valid value from frequencyOptions
-                interval = params.interval,    // integer, optional
-                occurrenceCount = params.occurrenceCount,  //integer, optional
-                endDate = params.endDate,      // date object or string in yyyy-MM-dd format, optional
-                                               // ignored if occurrenceCount provided
-                month = params.month,          // integer, optional, valid value from months
-                monthDay = params.monthDay,    // integer, optional, between 1 and 31
-                weekDays = params.weekDays,     // integer, optional, valid value from weekdays
-                setOccurrence = params.setOccurrence, // integer, optional, valid value from occurrences
-                options = {}, i;
+                var startDate = params.startDate,  // date object or string in yyyy-MM-ddTHH:mm:ss.sssZ format
+                    frequency = params.frequency,  // string, optional, valid value from frequencyOptions
+                    interval = params.interval,    // integer, optional
+                    occurrenceCount = params.occurrenceCount,  //integer, optional
+                    endDate = params.endDate,      // date object or string in yyyy-MM-dd format, optional
+                                                   // ignored if occurrenceCount provided
+                    month = params.month,          // integer, optional, valid value from months
+                    monthDay = params.monthDay,    // integer, optional, between 1 and 31
+                    weekDays = params.weekDays,     // integer, optional, valid value from weekdays
+                    setOccurrence = params.setOccurrence, // integer, optional, valid value from occurrences
+                    options = {}, i;
 
-            if (angular.isDate(startDate)) {
-                options.dtstart = startDate;
-            }
-            else {
-                try {
-                    options.dtstart = new Date(startDate);
+                if (angular.isDate(startDate)) {
+                    options.dtstart = startDate;
                 }
-                catch (e) {
-                    $log.error('Date conversion failed. Attempted to convert ' + startDate + ' to Date. ' + e.message);
-                }
-            }
-
-            if (frequency && frequency !== 'none') {
-                options.freq = RRule[frequency.toUpperCase()];
-                options.interval = interval;
-
-                if (weekDays && typeof weekDays === 'string') {
-                    options.byweekday = RRule[weekDays.toUpperCase()];
-                }
-
-                if (weekDays && angular.isArray(weekDays)) {
-                    options.byweekday = [];
-                    for (i = 0; i < weekDays.length; i++) {
-                        options.byweekday.push(RRule[weekDays[i].toUpperCase()]);
+                else {
+                    try {
+                        options.dtstart = new Date(startDate);
+                    }
+                    catch (e) {
+                        $log.error('Date conversion failed. Attempted to convert ' + startDate + ' to Date. ' + e.message);
                     }
                 }
 
-                if (setOccurrence !== undefined && setOccurrence !== null) {
-                    options.bysetpos = setOccurrence;
-                }
+                if (frequency && frequency !== 'none') {
+                    options.freq = RRule[frequency.toUpperCase()];
+                    options.interval = interval;
 
-                if (month) {
-                    options.bymonth = month;
-                }
-
-                if (monthDay) {
-                    options.bymonthday = monthDay;
-                }
-
-                if (occurrenceCount) {
-                    options.count = occurrenceCount;
-                }
-                else if (endDate) {
-                    if (angular.isDate(endDate)) {
-                        options.until = endDate;
+                    if (weekDays && typeof weekDays === 'string') {
+                        options.byweekday = RRule[weekDays.toUpperCase()];
                     }
-                    else {
-                        try {
-                            options.until = new Date(endDate);
-                        }
-                        catch (e) {
-                            $log.error('Date conversion failed. Attempted to convert ' + endDate + ' to Date. ' + e.message);
+
+                    if (weekDays && angular.isArray(weekDays)) {
+                        options.byweekday = [];
+                        for (i = 0; i < weekDays.length; i++) {
+                            options.byweekday.push(RRule[weekDays[i].toUpperCase()]);
                         }
                     }
-                }
-            }
-            else {
-                // We only want to run 1x
-                options.freq = RRule.DAILY;
-                options.interval = 1;
-                options.count = 1;
-            }
-            return new RRule(options);
-        };
-    }]);
-/**
- * @ngdoc service
- * @name angular-ui-scheduler:InRangeFactory
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-    .factory('InRange', function () {
-        return function (x, min, max, length) {
-            var rx = new RegExp('\\d{1,' + length + '}');
-            if (!rx.test(x)) {
-                return false;
-            }
-            if (x < min || x > max) {
-                return false;
-            }
-            return true;
-        };
-    });
 
-/**
- * @ngdoc service
- * @name angular-ui-scheduler:SetRule
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-    .factory('SetRule', ["angular_ui_scheduler_useTimezone", "$log", "$filter", function (angular_ui_scheduler_useTimezone, $log, $filter) {
-        return function (rule, scope) {
-            var set, result = '', i,
-                setStartDate = false;
-
-            // Search the set of RRule keys for a particular key, returning its value
-            function getValue(set, key) {
-                var pair = _.find(set, function (x) {
-                    var k = x.split(/=/)[0].toUpperCase();
-                    return (k === key);
-                });
-                if (pair) {
-                    return pair.split(/=/)[1].toUpperCase();
-                }
-                return null;
-            }
-
-            function toWeekDays(days) {
-                var darray = days.toLowerCase().split(/,/),
-                    match = _.find(scope.weekdays, function (x) {
-                        var warray = (angular.isArray(x.value)) ? x.value : [x.value],
-                            diffA = _.difference(warray, darray),
-                            diffB = _.difference(darray, warray);
-                        return (diffA.length === 0 && diffB.length === 0);
-                    });
-                return match;
-            }
-
-            function setValue(pair, set) {
-                var key = pair.split(/=/)[0].toUpperCase(),
-                    value = pair.split(/=/)[1],
-                    days, l, j, dt, month, day, timeString;
-
-                if (key === 'NAME') {
-                    //name is not actually part of RRule, but we can handle it just the same
-                    scope.schedulerName = value;
-                }
-
-                if (key === 'FREQ') {
-                    l = value.toLowerCase();
-                    scope.schedulerFrequency = _.find(scope.frequencyOptions, function (opt) {
-                        scope.schedulerIntervalLabel = opt.intervalLabel;
-                        return opt.value === l;
-                    });
-                    if (!scope.schedulerFrequency || !scope.schedulerFrequency.name) {
-                        result = 'FREQ not found in list of valid options';
+                    if (setOccurrence !== undefined && setOccurrence !== null) {
+                        options.bysetpos = setOccurrence;
                     }
-                }
-                if (key === 'INTERVAL') {
-                    if (parseInt(value, 10)) {
-                        scope.schedulerInterval = parseInt(value, 10);
-                        scope.schedulerShowInterval = true;
+
+                    if (month) {
+                        options.bymonth = month;
                     }
-                    else {
-                        result = 'INTERVAL must contain an integer > 0';
+
+                    if (monthDay) {
+                        options.bymonthday = monthDay;
                     }
-                }
-                if (key === 'BYDAY') {
-                    if (getValue(set, 'FREQ') === 'WEEKLY') {
-                        days = value.split(/,/);
-                        scope.weekDays = [];
-                        for (j = 0; j < days.length; j++) {
-                            if (_.contains(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
-                                scope.weekDays.push(days[j].toLowerCase());
-                                scope['weekDay' + days[j].toUpperCase() + 'Class'] = 'active'; //activate related button
+
+                    if (occurrenceCount) {
+                        options.count = occurrenceCount;
+                    }
+                    else if (endDate) {
+                        if (angular.isDate(endDate)) {
+                            options.until = endDate;
+                        }
+                        else {
+                            try {
+                                options.until = new Date(endDate);
                             }
-                            else {
+                            catch (e) {
+                                $log.error('Date conversion failed. Attempted to convert ' + endDate + ' to Date. ' + e.message);
+                            }
+                        }
+                    }
+                }
+                else {
+                    // We only want to run 1x
+                    options.freq = RRule.DAILY;
+                    options.interval = 1;
+                    options.count = 1;
+                }
+                return new RRule(options);
+            },
+            setRule: function (rule, scope) {
+                var set, result = '', i,
+                    setStartDate = false;
+
+                // Search the set of RRule keys for a particular key, returning its value
+                function getValue(set, key) {
+                    var pair = _.find(set, function (x) {
+                        var k = x.split(/=/)[0].toUpperCase();
+                        return (k === key);
+                    });
+                    if (pair) {
+                        return pair.split(/=/)[1].toUpperCase();
+                    }
+                    return null;
+                }
+
+                function toWeekDays(days) {
+                    var darray = days.toLowerCase().split(/,/),
+                        match = _.find(scope.weekdays, function (x) {
+                            var warray = (angular.isArray(x.value)) ? x.value : [x.value],
+                                diffA = _.difference(warray, darray),
+                                diffB = _.difference(darray, warray);
+                            return (diffA.length === 0 && diffB.length === 0);
+                        });
+                    return match;
+                }
+
+                function setValue(pair, set) {
+                    var key = pair.split(/=/)[0].toUpperCase(),
+                        value = pair.split(/=/)[1],
+                        days, l, j, dt, month, day, timeString;
+
+                    if (key === 'NAME') {
+                        //name is not actually part of RRule, but we can handle it just the same
+                        scope.schedulerName = value;
+                    }
+
+                    if (key === 'FREQ') {
+                        l = value.toLowerCase();
+                        scope.schedulerFrequency = _.find(scope.frequencyOptions, function (opt) {
+                            scope.schedulerIntervalLabel = opt.intervalLabel;
+                            return opt.value === l;
+                        });
+                        if (!scope.schedulerFrequency || !scope.schedulerFrequency.name) {
+                            result = 'FREQ not found in list of valid options';
+                        }
+                    }
+                    if (key === 'INTERVAL') {
+                        if (parseInt(value, 10)) {
+                            scope.schedulerInterval = parseInt(value, 10);
+                            scope.schedulerShowInterval = true;
+                        }
+                        else {
+                            result = 'INTERVAL must contain an integer > 0';
+                        }
+                    }
+                    if (key === 'BYDAY') {
+                        if (getValue(set, 'FREQ') === 'WEEKLY') {
+                            days = value.split(/,/);
+                            scope.weekDays = [];
+                            for (j = 0; j < days.length; j++) {
+                                if (_.contains(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
+                                    scope.weekDays.push(days[j].toLowerCase());
+                                    scope['weekDay' + days[j].toUpperCase() + 'Class'] = 'active'; //activate related button
+                                }
+                                else {
+                                    result = 'BYDAY contains unrecognized day value(s)';
+                                }
+                            }
+                        }
+                        else if (getValue(set, 'FREQ') === 'MONTHLY') {
+                            scope.monthlyRepeatOption = 'other';
+                            scope.monthlyWeekDay = toWeekDays(value);
+                            if (!scope.monthlyWeekDay) {
+                                result = 'BYDAY contains unrecognized day value(s)';
+                            }
+                        }
+                        else {
+                            scope.yearlyRepeatOption = 'other';
+                            scope.yearlyWeekDay = toWeekDays(value);
+                            if (!scope.yearlyWeekDay) {
                                 result = 'BYDAY contains unrecognized day value(s)';
                             }
                         }
                     }
-                    else if (getValue(set, 'FREQ') === 'MONTHLY') {
-                        scope.monthlyRepeatOption = 'other';
-                        scope.monthlyWeekDay = toWeekDays(value);
-                        if (!scope.monthlyWeekDay) {
-                            result = 'BYDAY contains unrecognized day value(s)';
+                    if (key === 'BYMONTHDAY') {
+                        if (parseInt(value, 10) && parseInt(value, 10) > 0 && parseInt(value, 10) < 32) {
+                            scope.monthDay = parseInt(value, 10);
+                            scope.monhthlyRepeatOption = 'day';
+                        }
+                        else {
+                            result = 'BYMONTHDAY must contain an integer between 1 and 31';
                         }
                     }
-                    else {
-                        scope.yearlyRepeatOption = 'other';
-                        scope.yearlyWeekDay = toWeekDays(value);
-                        if (!scope.yearlyWeekDay) {
-                            result = 'BYDAY contains unrecognized day value(s)';
+                    if (key === 'DTSTART') {
+                        // The form has been reset to the local zone
+                        setStartDate = true;
+                        if (/\d{8}T\d{6}.*Z/.test(value)) {
+                            // date may come in without separators. add them so new Date constructor will work
+                            value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
+                                function (match, p1, p2, p3, p4, p5, p6) {
+                                    return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
+                                });
                         }
-                    }
-                }
-                if (key === 'BYMONTHDAY') {
-                    if (parseInt(value, 10) && parseInt(value, 10) > 0 && parseInt(value, 10) < 32) {
-                        scope.monthDay = parseInt(value, 10);
-                        scope.monhthlyRepeatOption = 'day';
-                    }
-                    else {
-                        result = 'BYMONTHDAY must contain an integer between 1 and 31';
-                    }
-                }
-                if (key === 'DTSTART') {
-                    // The form has been reset to the local zone
-                    setStartDate = true;
-                    if (/\d{8}T\d{6}.*Z/.test(value)) {
-                        // date may come in without separators. add them so new Date constructor will work
-                        value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
-                            function (match, p1, p2, p3, p4, p5, p6) {
-                                return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
+                        if (angular_ui_scheduler_useTimezone) {
+                            dt = new Date(value); // date adjusted to local zone automatically
+                            month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
+                            day = $filter('schZeroPad')(dt.getDate(), 2);
+                            scope.schedulerStartDt = month + '/' + day + '/' + dt.getFullYear();
+                            scope.schedulerStartHour = $filter('schZeroPad')(dt.getHours(), 2);
+                            scope.schedulerStartMinute = $filter('schZeroPad')(dt.getMinutes(), 2);
+                            scope.schedulerStartSecond = $filter('schZeroPad')(dt.getSeconds(), 2);
+                            scope.scheduleTimeChange();  // calc UTC
+                        }
+                        else {
+                            // expects inbound dates to be in ISO format: 2014-04-02T00:00:00.000Z
+                            scope.schedulerStartDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
+                                return p2 + '/' + p3 + '/' + p1;
                             });
-                    }
-                    if (angular_ui_scheduler_useTimezone) {
-                        dt = new Date(value); // date adjusted to local zone automatically
-                        month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
-                        day = $filter('schZeroPad')(dt.getDate(), 2);
-                        scope.schedulerStartDt = month + '/' + day + '/' + dt.getFullYear();
-                        scope.schedulerStartHour = $filter('schZeroPad')(dt.getHours(), 2);
-                        scope.schedulerStartMinute = $filter('schZeroPad')(dt.getMinutes(), 2);
-                        scope.schedulerStartSecond = $filter('schZeroPad')(dt.getSeconds(), 2);
-                        scope.scheduleTimeChange();  // calc UTC
-                    }
-                    else {
-                        // expects inbound dates to be in ISO format: 2014-04-02T00:00:00.000Z
-                        scope.schedulerStartDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
-                            return p2 + '/' + p3 + '/' + p1;
-                        });
-                        timeString = value.replace(/^.*T/, '');
-                        scope.schedulerStartHour = $filter('schZeroPad')(timeString.substr(0, 2), 2);
-                        scope.schedulerStartMinute = $filter('schZeroPad')(timeString.substr(3, 2), 2);
-                        scope.schedulerStartSecond = $filter('schZeroPad')(timeString.substr(6, 2), 2);
-                    }
-                    scope.scheduleTimeChange();
-                }
-                if (key === 'BYSETPOS') {
-                    if (getValue(set, 'FREQ') === 'YEARLY') {
-                        scope.yearlRepeatOption = 'other';
-                        scope.yearlyOccurrence = _.find(scope.occurrences, function (x) {
-                            return (x.value === parseInt(value, 10));
-                        });
-                        if (!scope.yearlyOccurrence || !scope.yearlyOccurrence.name) {
-                            result = 'BYSETPOS was not in the set of 1,2,3,4,-1';
+                            timeString = value.replace(/^.*T/, '');
+                            scope.schedulerStartHour = $filter('schZeroPad')(timeString.substr(0, 2), 2);
+                            scope.schedulerStartMinute = $filter('schZeroPad')(timeString.substr(3, 2), 2);
+                            scope.schedulerStartSecond = $filter('schZeroPad')(timeString.substr(6, 2), 2);
                         }
+                        scope.scheduleTimeChange();
                     }
-                    else {
-                        scope.monthlyOccurrence = _.find(scope.occurrences, function (x) {
-                            return (x.value === parseInt(value, 10));
-                        });
-                        if (!scope.monthlyOccurrence || !scope.monthlyOccurrence.name) {
-                            result = 'BYSETPOS was not in the set of 1,2,3,4,-1';
-                        }
-                    }
-                }
-
-                if (key === 'COUNT') {
-                    if (parseInt(value, 10)) {
-                        scope.schedulerEnd = scope.endOptions[1];
-                        scope.schedulerOccurrenceCount = parseInt(value, 10);
-                    }
-                    else {
-                        result = 'COUNT must be a valid integer > 0';
-                    }
-                }
-
-                if (key === 'UNTIL') {
-                    if (/\d{8}T\d{6}.*Z/.test(value)) {
-                        // date may come in without separators. add them so new Date constructor will work
-                        value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
-                            function (match, p1, p2, p3, p4, p5, p6) {
-                                return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
+                    if (key === 'BYSETPOS') {
+                        if (getValue(set, 'FREQ') === 'YEARLY') {
+                            scope.yearlRepeatOption = 'other';
+                            scope.yearlyOccurrence = _.find(scope.occurrences, function (x) {
+                                return (x.value === parseInt(value, 10));
                             });
+                            if (!scope.yearlyOccurrence || !scope.yearlyOccurrence.name) {
+                                result = 'BYSETPOS was not in the set of 1,2,3,4,-1';
+                            }
+                        }
+                        else {
+                            scope.monthlyOccurrence = _.find(scope.occurrences, function (x) {
+                                return (x.value === parseInt(value, 10));
+                            });
+                            if (!scope.monthlyOccurrence || !scope.monthlyOccurrence.name) {
+                                result = 'BYSETPOS was not in the set of 1,2,3,4,-1';
+                            }
+                        }
                     }
-                    scope.schedulerEnd = scope.endOptions[2];
-                    if (angular_ui_scheduler_useTimezone) {
-                        dt = new Date(value); // date adjusted to local zone automatically
-                        month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
-                        day = $filter('schZeroPad')(dt.getDate(), 2);
-                        scope.schedulerEndDt = month + '/' + day + '/' + dt.getFullYear();
+
+                    if (key === 'COUNT') {
+                        if (parseInt(value, 10)) {
+                            scope.schedulerEnd = scope.endOptions[1];
+                            scope.schedulerOccurrenceCount = parseInt(value, 10);
+                        }
+                        else {
+                            result = 'COUNT must be a valid integer > 0';
+                        }
                     }
-                    else {
-                        scope.schedulerEndDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
-                            return p2 + '/' + p3 + '/' + p1;
-                        });
+
+                    if (key === 'UNTIL') {
+                        if (/\d{8}T\d{6}.*Z/.test(value)) {
+                            // date may come in without separators. add them so new Date constructor will work
+                            value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
+                                function (match, p1, p2, p3, p4, p5, p6) {
+                                    return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
+                                });
+                        }
+                        scope.schedulerEnd = scope.endOptions[2];
+                        if (angular_ui_scheduler_useTimezone) {
+                            dt = new Date(value); // date adjusted to local zone automatically
+                            month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
+                            day = $filter('schZeroPad')(dt.getDate(), 2);
+                            scope.schedulerEndDt = month + '/' + day + '/' + dt.getFullYear();
+                        }
+                        else {
+                            scope.schedulerEndDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
+                                return p2 + '/' + p3 + '/' + p1;
+                            });
+                        }
+                    }
+
+                    if (key === 'BYMONTH') {
+                        if (getValue(set, 'FREQ') === 'YEARLY' && getValue(set, 'BYDAY')) {
+                            scope.yearlRepeatOption = 'other';
+                            scope.yearlyOtherMonth = _.find(scope.months, function (x) {
+                                return x.value === parseInt(value, 10);
+                            });
+                            if (!scope.yearlyOtherMonth || !scope.yearlyOtherMonth.name) {
+                                result = 'BYMONTH must be an integer between 1 and 12';
+                            }
+                        }
+                        else {
+                            scope.yearlyOption = 'month';
+                            scope.yearlyMonth = _.find(scope.months, function (x) {
+                                return x.value === parseInt(value, 10);
+                            });
+                            if (!scope.yearlyMonth || !scope.yearlyMonth.name) {
+                                result = 'BYMONTH must be an integer between 1 and 12';
+                            }
+                        }
+                    }
+
+                    if (key === 'BYMONTHDAY') {
+                        if (parseInt(value, 10)) {
+                            scope.yearlyMonthDay = parseInt(value, 10);
+                        }
+                        else {
+                            result = 'BYMONTHDAY must be an integer between 1 and 31';
+                        }
                     }
                 }
 
-                if (key === 'BYMONTH') {
-                    if (getValue(set, 'FREQ') === 'YEARLY' && getValue(set, 'BYDAY')) {
-                        scope.yearlRepeatOption = 'other';
-                        scope.yearlyOtherMonth = _.find(scope.months, function (x) {
-                            return x.value === parseInt(value, 10);
-                        });
-                        if (!scope.yearlyOtherMonth || !scope.yearlyOtherMonth.name) {
-                            result = 'BYMONTH must be an integer between 1 and 12';
+                function isValid() {
+                    // Check what was put into scope vars, and see if anything is
+                    // missing or not quite right.
+                    if (scope.schedulerFrequency.name === 'weekly' && scope.weekDays.length === 0) {
+                        result = 'Frequency is weekly, but BYDAYS value is missing.';
+                    }
+                    if (!setStartDate) {
+                        result = 'Warning: start date was not provided';
+                    }
+                }
+
+                if (rule) {
+                    set = rule.split(/;/);
+                    if (angular.isArray(set)) {
+                        for (i = 0; i < set.length; i++) {
+                            setValue(set[i], set);
+                            if (result) {
+                                break;
+                            }
+                        }
+                        if (!result) {
+                            isValid();
                         }
                     }
                     else {
-                        scope.yearlyOption = 'month';
-                        scope.yearlyMonth = _.find(scope.months, function (x) {
-                            return x.value === parseInt(value, 10);
-                        });
-                        if (!scope.yearlyMonth || !scope.yearlyMonth.name) {
-                            result = 'BYMONTH must be an integer between 1 and 12';
-                        }
-                    }
-                }
-
-                if (key === 'BYMONTHDAY') {
-                    if (parseInt(value, 10)) {
-                        scope.yearlyMonthDay = parseInt(value, 10);
-                    }
-                    else {
-                        result = 'BYMONTHDAY must be an integer between 1 and 31';
-                    }
-                }
-            }
-
-            function isValid() {
-                // Check what was put into scope vars, and see if anything is
-                // missing or not quite right.
-                if (scope.schedulerFrequency.name === 'weekly' && scope.weekDays.length === 0) {
-                    result = 'Frequency is weekly, but BYDAYS value is missing.';
-                }
-                if (!setStartDate) {
-                    result = 'Warning: start date was not provided';
-                }
-            }
-
-            if (rule) {
-                set = rule.split(/;/);
-                if (angular.isArray(set)) {
-                    for (i = 0; i < set.length; i++) {
-                        setValue(set[i], set);
-                        if (result) {
-                            break;
-                        }
-                    }
-                    if (!result) {
-                        isValid();
+                        result = 'No rule entered. Provide a valid RRule string.';
                     }
                 }
                 else {
                     result = 'No rule entered. Provide a valid RRule string.';
                 }
+                if (result) {
+                    $log.error(result);
+                }
+                return result;
             }
-            else {
-                result = 'No rule entered. Provide a valid RRule string.';
-            }
-            if (result) {
-                $log.error(result);
-            }
-            return result;
         };
     }]);
