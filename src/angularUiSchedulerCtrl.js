@@ -8,7 +8,7 @@
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, useTimezone, InRange, GetRule, SetRule) {
+    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, angular_ui_scheduler_useTimezone, InRange, GetRule, SetRule) {
 
         //region defaults
         $scope.frequencyOptions = [
@@ -121,7 +121,7 @@ angular.module('angular-ui-scheduler')
             var fn = function () {
 
                 this.scope = scope;
-                this.useTimezone = useTimezone;
+                this.useTimezone = angular_ui_scheduler_useTimezone;
                 this.requireFutureStartTime = requireFutureST;
 
                 // Evaluate user intput and build options for passing to rrule
@@ -185,7 +185,7 @@ angular.module('angular-ui-scheduler')
                     //    rrule.all(function (date, i) {
                     //        var local, dt;
                     //        if (i < 10) {
-                    //            if (useTimezone) {
+                    //            if (angular_ui_scheduler_useTimezone) {
                     //                dt = $timezones.align(date, scope.schedulerTimeZone);
                     //                local = $filter('schZeroPad')(dt.getMonth() + 1, 2) + '/' +
                     //                    $filter('schZeroPad')(dt.getDate(), 2) + '/' + dt.getFullYear() + ' ' +
@@ -264,10 +264,10 @@ angular.module('angular-ui-scheduler')
             var scope = params.scope,
                 requireFutureStartTime = params.requireFutureStartTime || false;
 
-            scope.schedulerShowTimeZone = useTimezone;
+            scope.schedulerShowTimeZone = angular_ui_scheduler_useTimezone;
 
             scope.setDefaults = function () {
-                //if (useTimezone) {
+                //if (angular_ui_scheduler_useTimezone) {
                 //    scope.current_timezone = `.getLocal();
                 //    if ($.isEmptyObject(scope.current_timezone) || !scope.current_timezone.name) {
                 //        $log.error('Failed to find local timezone. Defaulting to America/New_York.');
@@ -285,7 +285,7 @@ angular.module('angular-ui-scheduler')
             };
 
             scope.scheduleTimeChange = function () {
-                if (useTimezone) {
+                if (angular_ui_scheduler_useTimezone) {
                     scope.resetStartDate();
                     try {
 
@@ -347,7 +347,7 @@ angular.module('angular-ui-scheduler')
                 scope.schedulerOccurrenceCount = 1;
             };
 
-            if (useTimezone) {
+            if (angular_ui_scheduler_useTimezone) {
                 scope.timeZones = moment.tz.names();
             }
             scope.setDefaults();
