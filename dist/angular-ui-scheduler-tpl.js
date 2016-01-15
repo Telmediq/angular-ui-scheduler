@@ -196,8 +196,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-4\" ng-show=\"schedulerEnd && schedulerEnd.value == 'on'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "\n" +
-    "                        <input type=\"date\" name=\"schedulerEndDt\" id=\"schedulerEndDt\" class=\"form-control \" ng-model=\"schedulerEndDt\" data-min-today=\"true\" placeholder=\"mm/dd/yyyy\"\n" +
-    "                               ng-change=\"resetError('scheduler_endDt_error')\">\n" +
+    "                        <input type=\"date\" name=\"schedulerEndDt\" id=\"schedulerEndDt\" class=\"form-control \" ng-model=\"schedulerEndDt\" data-min-today=\"true\" ng-change=\"resetError('scheduler_endDt_error')\">\n" +
     "\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_endDt_error\">Provide a valid date</div>\n" +
     "                    </div>\n" +

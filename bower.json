@@ -19,9 +19,7 @@
     "bootstrap": "~3.1.1",
     "rrule": "~2.1.0",
     "moment": "~2.11.1",
-    "moment-timezone": "~0.5.0",
-    "timezone-js": "*",
-    "angular-tz-extensions": "*"
+    "moment-timezone": "~0.5.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.8"
@@ -32,21 +30,10 @@
     "dist/angular-ui-scheduler.css"
   ],
   "overrides": {
-    "angular-tz-extensions": {
-      "main": [
-        "packages/jstimezonedetect/jstz.js",
-        "lib/angular-tz-extensions.js"
-      ]
-    },
     "rrule": {
       "main": [
         "lib/rrule.js",
         "lib/nlp.js"
-      ]
-    },
-    "timezone-js": {
-      "main": [
-        "src/date.js"
       ]
     }
   }

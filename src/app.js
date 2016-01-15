@@ -1,2 +1,2 @@
-angular.module('angular-ui-scheduler', ['Timezones'])
+angular.module('angular-ui-scheduler', [])
     .constant('useTimezone', false);

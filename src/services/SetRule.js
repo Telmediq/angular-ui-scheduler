@@ -7,7 +7,7 @@
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('SetRule', function (useTimezone, $log, $timezones, $filter) {
+    .factory('SetRule', function (useTimezone, $log, $filter) {
         return function (rule, scope) {
             var set, result = '', i,
                 setStartDate = false;

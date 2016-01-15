@@ -190,8 +190,7 @@
                 <div class="col-md-4" ng-show="schedulerEnd && schedulerEnd.value == 'on'">
                     <div class="form-group no-label">
 
-                        <input type="date" name="schedulerEndDt" id="schedulerEndDt" class="form-control " ng-model="schedulerEndDt" data-min-today="true" placeholder="mm/dd/yyyy"
-                               ng-change="resetError('scheduler_endDt_error')">
+                        <input type="date" name="schedulerEndDt" id="schedulerEndDt" class="form-control " ng-model="schedulerEndDt" data-min-today="true" ng-change="resetError('scheduler_endDt_error')">
 
                         <div class="error" ng-show="scheduler_endDt_error">Provide a valid date</div>
                     </div>

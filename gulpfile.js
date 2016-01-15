@@ -27,10 +27,6 @@ var paths = {
         'bower_components/rrule/lib/nlp.js',
         'bower_components/moment/moment.js',
         'bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js',
-        'bower_components/timezone-js/src/date.js',
-        'bower_components/angular-filters/dist/angular-filters.js',
-        'bower_components/angular-tz-extensions/packages/jstimezonedetect/jstz.js',
-        'bower_components/angular-tz-extensions/lib/angular-tz-extensions.js',
         // endbower
     ],
     libsCss: [

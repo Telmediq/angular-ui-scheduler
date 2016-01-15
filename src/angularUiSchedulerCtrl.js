@@ -8,17 +8,17 @@
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, $timezones, useTimezone, InRange, GetRule, SetRule) {
+    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, useTimezone, InRange, GetRule, SetRule) {
 
         //region defaults
         $scope.frequencyOptions = [
             {name: 'None (run once)', value: 'none', intervalLabel: ''},
-            {name: 'Minute', value: 'minutely', intervalLabel: 'minutes'},
-            {name: 'Hour', value: 'hourly', intervalLabel: 'hours'},
-            {name: 'Day', value: 'daily', intervalLabel: 'days'},
-            {name: 'Week', value: 'weekly', intervalLabel: 'weeks'},
-            {name: 'Month', value: 'monthly', intervalLabel: 'months'},
-            {name: 'Year', value: 'yearly', intervalLabel: 'years'}
+            {name: 'Minute', value: 'minutely', intervalLabel: 'minute(s)'},
+            {name: 'Hour', value: 'hourly', intervalLabel: 'hour(s)'},
+            {name: 'Day', value: 'daily', intervalLabel: 'day(s)'},
+            {name: 'Week', value: 'weekly', intervalLabel: 'week(s)'},
+            {name: 'Month', value: 'monthly', intervalLabel: 'month(s)'},
+            {name: 'Year', value: 'yearly', intervalLabel: 'year(s)'}
         ];
 
         $scope.endOptions = [
@@ -134,9 +134,7 @@ angular.module('angular-ui-scheduler')
                         options.occurrenceCount = this.scope.schedulerOccurrenceCount;
                     }
                     if (this.scope.schedulerEnd.value === 'on') {
-                        options.endDate = scope.schedulerEndDt.replace(/(\d{2})\/(\d{2})\/(\d{4})/, function (match, p1, p2, p3) {
-                                return p3 + '-' + p1 + '-' + p2;
-                            }) + 'T' + this.scope.schedulerUTCTime.replace(/\d{2}\/\d{2}\/\d{4} /, '').replace(/ UTC/, '') + 'Z';
+                        options.endDate = moment(scope.schedulerUTCTime).add(1, 'd').toDate();
                     }
                     if (this.scope.schedulerFrequency.value === 'weekly') {
                         options.weekDays = this.scope.weekDays;
@@ -174,45 +172,39 @@ angular.module('angular-ui-scheduler')
                     this.scope.scheduler_occurrenceCount_error = false;
                     this.scope.scheduler_monthDay_error = false;
                     this.scope.scheduler_yearlyMonthDay_error = false;
-
-                    if (this.scope.scheduler_form && this.scope.scheduler_form.schedulerEndDt) {
-                        this.scope.scheduler_form.schedulerEndDt.$setValidity('custom-error', true);
-                        this.scope.scheduler_form.schedulerEndDt.$setPristine();
-                        this.scope.scheduler_form.$setPristine();
-                    }
                 };
 
                 // Set values for detail page
                 this.setDetails = function () {
-                    var rrule = this.getRRule(),
-                        scope = this.scope;
-                    if (rrule) {
-                        scope.rrule_nlp_description = rrule.toText();
-                        scope.dateChoice = 'local';
-                        scope.occurrence_list = [];
-                        rrule.all(function (date, i) {
-                            var local, dt;
-                            if (i < 10) {
-                                if (useTimezone) {
-                                    dt = $timezones.align(date, scope.schedulerTimeZone);
-                                    local = $filter('schZeroPad')(dt.getMonth() + 1, 2) + '/' +
-                                        $filter('schZeroPad')(dt.getDate(), 2) + '/' + dt.getFullYear() + ' ' +
-                                        $filter('schZeroPad')(dt.getHours(), 2) + ':' +
-                                        $filter('schZeroPad')(dt.getMinutes(), 2) + ':' +
-                                        $filter('schZeroPad')(dt.getSeconds(), 2) + ' ' +
-                                        dt.getTimezoneAbbreviation();
-                                }
-                                else {
-                                    local = $filter('date')(date, 'MM/dd/yyyy HH:mm:ss Z');
-                                }
-                                scope.occurrence_list.push({utc: $filter('schDateStrFix')(date.toISOString()), local: local});
-                                return true;
-                            }
-                            return false;
-                        });
-                        scope.rrule_nlp_description = rrule.toText().replace(/^RRule error.*$/, 'Natural language description not available');
-                        scope.rrule = rrule.toString();
-                    }
+                    //var rrule = this.getRRule(),
+                    //    scope = this.scope;
+                    //if (rrule) {
+                    //    scope.rrule_nlp_description = rrule.toText();
+                    //    scope.dateChoice = 'local';
+                    //    scope.occurrence_list = [];
+                    //    rrule.all(function (date, i) {
+                    //        var local, dt;
+                    //        if (i < 10) {
+                    //            if (useTimezone) {
+                    //                dt = $timezones.align(date, scope.schedulerTimeZone);
+                    //                local = $filter('schZeroPad')(dt.getMonth() + 1, 2) + '/' +
+                    //                    $filter('schZeroPad')(dt.getDate(), 2) + '/' + dt.getFullYear() + ' ' +
+                    //                    $filter('schZeroPad')(dt.getHours(), 2) + ':' +
+                    //                    $filter('schZeroPad')(dt.getMinutes(), 2) + ':' +
+                    //                    $filter('schZeroPad')(dt.getSeconds(), 2) + ' ' +
+                    //                    dt.getTimezoneAbbreviation();
+                    //            }
+                    //            else {
+                    //                local = $filter('date')(date, 'MM/dd/yyyy HH:mm:ss Z');
+                    //            }
+                    //            scope.occurrence_list.push({utc: $filter('schDateStrFix')(date.toISOString()), local: local});
+                    //            return true;
+                    //        }
+                    //        return false;
+                    //    });
+                    //    scope.rrule_nlp_description = rrule.toText().replace(/^RRule error.*$/, 'Natural language description not available');
+                    //    scope.rrule = rrule.toString();
+                    //}
                 };
 
                 // Returns an rrule object
@@ -251,11 +243,6 @@ angular.module('angular-ui-scheduler')
                     this.scope.setDefaults();
                 };
 
-                // Get the user's local timezone
-                this.getUserTimezone = function () {
-                    return $timezones.getLocal();
-                };
-
                 // futureStartTime setter/getter
                 this.setRequireFutureStartTime = function (opt) {
                     this.requireFutureStartTime = opt;
@@ -280,17 +267,17 @@ angular.module('angular-ui-scheduler')
             scope.schedulerShowTimeZone = useTimezone;
 
             scope.setDefaults = function () {
-                if (useTimezone) {
-                    scope.current_timezone = $timezones.getLocal();
-                    if ($.isEmptyObject(scope.current_timezone) || !scope.current_timezone.name) {
-                        $log.error('Failed to find local timezone. Defaulting to America/New_York.');
-                        scope.current_timezone = {name: 'America/New_York'};
-                    }
-                    // Set the <select> to the browser's local timezone
-                    scope.schedulerTimeZone = _.find(scope.timeZones, function (x) {
-                        return x.name === scope.current_timezone.name;
-                    });
-                }
+                //if (useTimezone) {
+                //    scope.current_timezone = `.getLocal();
+                //    if ($.isEmptyObject(scope.current_timezone) || !scope.current_timezone.name) {
+                //        $log.error('Failed to find local timezone. Defaulting to America/New_York.');
+                //        scope.current_timezone = {name: 'America/New_York'};
+                //    }
+                //    // Set the <select> to the browser's local timezone
+                //    scope.schedulerTimeZone = _.find(scope.timeZones, function (x) {
+                //        return x.name === scope.current_timezone.name;
+                //    });
+                //}
                 //LoadLookupValues(scope);
                 //SetDefaults(scope);
                 scope.scheduleTimeChange();
@@ -357,10 +344,6 @@ angular.module('angular-ui-scheduler')
             };
 
             scope.schedulerEndChange = function () {
-                var dt = new Date(), // date adjusted to local zone automatically
-                    month = $filter('schZeroPad')(dt.getMonth() + 1, 2),
-                    day = $filter('schZeroPad')(dt.getDate(), 2);
-                scope.schedulerEndDt = month + '/' + day + '/' + dt.getFullYear();
                 scope.schedulerOccurrenceCount = 1;
             };
 
