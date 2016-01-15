@@ -1,2 +1,6 @@
-bower_components
-node_modules
+bower_components/
+node_modules/
+coverage/
+$CIRCLE_TEST_REPORTS/
+karma.config.js
+.idea/

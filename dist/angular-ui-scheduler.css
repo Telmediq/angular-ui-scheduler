@@ -1,0 +1,127 @@
+.angular-ui-scheduler {
+  /*input.ng-dirty.ng-invalid, select.ng-dirty.ng-invalid, textarea.ng-dirty.ng-invalid {
+      border: 1px solid red;
+      outline: none;
+  }*/
+  /* Details page */
+}
+.angular-ui-scheduler .ui-widget input {
+  font-size: 12px;
+  font-weight: normal;
+  text-align: center;
+}
+.angular-ui-scheduler .ui-spinner.ui-widget-content {
+  border-bottom-color: #ccc;
+  border-top-color: #ccc;
+  border-left-color: #ccc;
+  border-right-color: #ccc;
+}
+.angular-ui-scheduler .ui-spinner-button {
+  border-left-color: #ccc;
+  border-left-style: solid;
+  border-left-width: 1px;
+}
+.angular-ui-scheduler .scheduler-time-spinner {
+  width: 40px;
+  height: 24px;
+}
+.angular-ui-scheduler .scheduler-spinner {
+  width: 50px;
+  height: 24px;
+}
+.angular-ui-scheduler .fmt-help {
+  font-size: 12px;
+  font-weight: normal;
+  color: #999;
+  padding-left: 10px;
+}
+.angular-ui-scheduler .error {
+  color: #dd1b16;
+  font-size: 12px;
+  margin-bottom: 0;
+  margin-top: 0;
+  padding-top: 3px;
+}
+.angular-ui-scheduler .error-pull-up {
+  position: relative;
+  top: -15px;
+  margin-bottom: 15px;
+}
+.angular-ui-scheduler .red-text {
+  color: #dd1b16;
+}
+.angular-ui-scheduler .help-text {
+  font-size: 12px;
+  font-weight: normal;
+  color: #999;
+  margin-top: 5px;
+}
+.angular-ui-scheduler .inline-label {
+  margin-left: 10px;
+}
+.angular-ui-scheduler #scheduler-buttons {
+  margin-top: 20px;
+}
+.angular-ui-scheduler .no-label {
+  padding-top: 25px;
+}
+.angular-ui-scheduler .radio-inline input[type="radio"] {
+  margin-top: 2px;
+  margin-left: -15px;
+}
+.angular-ui-scheduler .radio-inline {
+  margin-left: 15px;
+}
+.angular-ui-scheduler .padding-top-slim {
+  padding-top: 5px;
+}
+.angular-ui-scheduler .option-pad-left {
+  padding-left: 15px;
+}
+.angular-ui-scheduler .option-pad-top {
+  padding-top: 15px;
+}
+.angular-ui-scheduler .option-pad-bottom {
+  padding-bottom: 15px;
+}
+.angular-ui-scheduler #monthlyOccurrence,
+.angular-ui-scheduler #monthlyWeekDay {
+  margin-top: 5px;
+}
+.angular-ui-scheduler select {
+  width: 100%;
+}
+.angular-ui-scheduler #occurrence-label {
+  display: inline-block;
+}
+.angular-ui-scheduler .occurrence-list {
+  border: 1px solid #ccc;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background-color: #eee;
+  list-style: none;
+  margin-bottom: 5px;
+  min-height: 220px;
+}
+.angular-ui-scheduler #date-choice {
+  display: inline-block;
+  margin-left: 15px;
+  font-size: 12px;
+}
+.angular-ui-scheduler #date-choice input {
+  margin-bottom: 2px;
+  height: 11px;
+  width: 10px;
+}
+.angular-ui-scheduler #date-choice .radio-inline:nth-child(2) {
+  margin-left: 10px;
+}
+.angular-ui-scheduler #weekdaySelect .btn-default:hover,
+.angular-ui-scheduler #weekdaySelect .btn-default:focus {
+  background-color: #fff;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.angular-ui-scheduler #weekdaySelect .btn-default.active:hover {
+  background-color: #e0e0e0;
+}

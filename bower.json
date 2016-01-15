@@ -1,39 +1,53 @@
 {
-  "name": "angular-scheduler",
-  "version": "0.0.14",
-  "authors": [
-    "Chris Houseknecht <chouse@ansible.com>"
-  ],
+  "name": "angular-ui-scheduler",
+  "version": "0.1.0",
   "description": "Angular based UI widget for creating repeat schedule entries.",
   "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "tests",
+    "bower_components",
+    "node_modules",
+    "coverage",
+    "$CIRCLE_TEST_REPORTS/"
   ],
-  "devDependencies": {
-    "angular-route": "*",
-    "components-font-awesome": "*",
-    "jquery": "*",
-    "jqueryui": "*",
-    "less": "*",
-    "angular-mocks": "~1.2.13"
-  },
   "dependencies": {
-    "angular": "~1.2.14",
-    "underscore": "*",
+    "angular": "~1.4.8",
+    "lodash": "~4.0.1",
     "bootstrap": "~3.1.1",
-    "rrule": "*",
+    "rrule": "~2.1.0",
+    "moment": "~2.11.1",
+    "moment-timezone": "~0.5.0",
     "timezone-js": "*",
     "angular-tz-extensions": "*"
   },
-  "homepage": "https://github.com/chouseknecht/angular-scheduler",
-  "main": "git@github.com:chouseknecht/angular-scheduler.git",
-  "keywords": [
-    "schedule",
-    "rrule",
-    "calendar"
-  ]
+  "devDependencies": {
+    "angular-mocks": "~1.4.8"
+  },
+  "main": [
+    "dist/angular-ui-scheduler.js",
+    "dist/angular-ui-scheduler-tpl.js",
+    "dist/angular-ui-scheduler.css"
+  ],
+  "overrides": {
+    "angular-tz-extensions": {
+      "main": [
+        "packages/jstimezonedetect/jstz.js",
+        "lib/angular-tz-extensions.js"
+      ]
+    },
+    "rrule": {
+      "main": [
+        "lib/rrule.js",
+        "lib/nlp.js"
+      ]
+    },
+    "timezone-js": {
+      "main": [
+        "src/date.js"
+      ]
+    }
+  }
 }
