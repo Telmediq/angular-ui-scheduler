@@ -537,7 +537,7 @@ angular.module('angular-ui-scheduler')
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('SetRule', ["useTimezone", "$log", "$filter", function (useTimezone, $log, $filter) {
+    .factory('SetRule', ["angular_ui_scheduler_useTimezone", "$log", "$filter", function (angular_ui_scheduler_useTimezone, $log, $filter) {
         return function (rule, scope) {
             var set, result = '', i,
                 setStartDate = false;
@@ -642,7 +642,7 @@ angular.module('angular-ui-scheduler')
                                 return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
                             });
                     }
-                    if (useTimezone) {
+                    if (angular_ui_scheduler_useTimezone) {
                         dt = new Date(value); // date adjusted to local zone automatically
                         month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
                         day = $filter('schZeroPad')(dt.getDate(), 2);
@@ -703,7 +703,7 @@ angular.module('angular-ui-scheduler')
                             });
                     }
                     scope.schedulerEnd = scope.endOptions[2];
-                    if (useTimezone) {
+                    if (angular_ui_scheduler_useTimezone) {
                         dt = new Date(value); // date adjusted to local zone automatically
                         month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
                         day = $filter('schZeroPad')(dt.getDate(), 2);
