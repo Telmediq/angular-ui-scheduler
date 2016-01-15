@@ -2,7 +2,7 @@
 <html lang="en" ng-app="sampleApp">
 <head>
     <meta charset="utf-8">
-    <title>Angular Scheduler | Demo</title>
+    <title>angular-ui-scheduler | Demo</title>
     <!-- bower:css -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
     <!-- endbower -->
@@ -14,7 +14,7 @@
 <nav class="navbar navbar-default" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="">Angular Scheduler</a>
+            <a class="navbar-brand" href="">angular-ui-scheduler</a>
         </div>
     </div>
 </nav>
@@ -27,6 +27,7 @@
 
                 <angular-ui-scheduler></angular-ui-scheduler>
 
+                <pre>{{scheduler.getValue() | json}}</pre>
             </div>
 
             <div class="col-md-4">

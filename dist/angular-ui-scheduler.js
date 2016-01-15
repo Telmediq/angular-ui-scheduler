@@ -74,9 +74,9 @@ angular.module('angular-ui-scheduler')
             defaultDay = $filter('schZeroPad')(defaultDate.getDate(), 2);
         $scope.schedulerName = '';
         $scope.weekDays = [];
-        $scope.schedulerStartHour = '00';
-        $scope.schedulerStartMinute = '00';
-        $scope.schedulerStartSecond = '00';
+        $scope.schedulerStartHour = 0;
+        $scope.schedulerStartMinute = 0;
+        $scope.schedulerStartSecond = 0;
         $scope.schedulerStartDt = defaultDate;
         $scope.schedulerFrequency = $scope.frequencyOptions[0];
         $scope.schedulerShowEvery = false;
@@ -525,7 +525,7 @@ angular.module('angular-ui-scheduler')
 
         }
 
-        Init({scope: $scope, requireFutureStartTime: false});
+        $scope.scheduler = Init({scope: $scope, requireFutureStartTime: false});
 }]);
 
 /**

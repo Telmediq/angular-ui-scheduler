@@ -7,7 +7,7 @@ angular.module('sampleApp', ['angular-ui-scheduler'])
         };
     }])
 
-    .constant('useTimezone', true)
+    .constant('useTimezone', false)
     .constant('showUTCField', true)
     .constant('$timezones.definitions.location', '/bower_components/angular-tz-extensions/tz/data')
 
