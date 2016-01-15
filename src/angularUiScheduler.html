@@ -69,11 +69,13 @@
                     <div class="error" ng-show="sheduler_frequency_error"></div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group no-label" ng-show="schedulerShowInterval">
+                    <div class="form-group" ng-show="schedulerShowInterval">
                         <label>Every</label>
-                        <input name="schedulerInterval" id="schedulerInterval" type="number" class="scheduler-spinner"
-                               ng-model="schedulerInterval" min="1" max="999" ng-change="resetError('scheduler_interval_error')">
-                        <label class="inline-label" ng-bind="schedulerIntervalLabel"></label>
+                        <div class="input-group">
+                            <input name="schedulerInterval" id="schedulerInterval" type="number" class="form-control"
+                                   ng-model="schedulerInterval" min="1" max="999" ng-change="resetError('scheduler_interval_error')">
+                            <span class="input-group-addon" ng-bind="schedulerIntervalLabel"></span>
+                        </div>
                         <div class="error" ng-show="scheduler_interval_error">Provide a value between 1 and 999</div>
                     </div>
                 </div>
@@ -87,7 +89,7 @@
                                           id="monthlyRepeatOption"> on day</label>
                         </div>
                         <div class="col-md-3" style="padding-top:5px">
-                            <input name="monthDay" id="monthDay" type="number" class="scheduler-spinner"
+                            <input name="monthDay" id="monthDay" type="number" class="form-control"
                                    ng-model="monthDay" min="1" max="31" ng-change="resetError('scheduler_monthDay_error')">
                             <div class="error" ng-show="scheduler_monthDay_error">Must be between 1 and 31</div>
                         </div>
@@ -125,7 +127,7 @@
                                     ng-disabled="yearlyRepeatOption != 'month'" class="form-control "></select>
                         </div>
                         <div class="col-md-3 padding-top-slim">
-                            <input name="yearlyMonthDay" id="yearlyMonthDay" type="number" class="scheduler-spinner"
+                            <input name="yearlyMonthDay" id="yearlyMonthDay" type="number" class="form-control"
                                    ng-model="yearlyMonthDay" min="1" max="31" ng-change="resetError('scheduler_yearlyMonthDay_error')">
                             <div class="error" ng-show="scheduler_yearlyMonthDay_error">Must be between 1 and 31</div>
                         </div>
@@ -185,9 +187,9 @@
                 <div class="col-md-4" ng-show="schedulerEnd && schedulerEnd.value == 'after'">
                     <div class="form-group no-label">
                         <div class="input-group">
-                            <input type="number" ng-name="schedulerOccurrenceCount" ng-id="schedulerOccurrenceCount" class="scheduler-spinner"
+                            <input type="number" ng-name="schedulerOccurrenceCount" ng-id="schedulerOccurrenceCount" class="form-control"
                                    ng-model="schedulerOccurrenceCount" min="1" max="999" on-change="resetError('scheduler_occurrenceCount_error')">
-                            <label class="inline-label">Occurrence(s)</label>
+                            <span class="input-group-addon">Occurrence(s)</span>
                         </div>
                         <div class="error" ng-show="scheduler_occurrenceCount_error">Provide a value between 1 and 999</div>
                     </div>

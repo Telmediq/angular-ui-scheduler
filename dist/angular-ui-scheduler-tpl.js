@@ -75,11 +75,13 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"error\" ng-show=\"sheduler_frequency_error\"></div>\n" +
     "                </div>\n" +
     "                <div class=\"col-md-4\">\n" +
-    "                    <div class=\"form-group no-label\" ng-show=\"schedulerShowInterval\">\n" +
+    "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
     "                        <label>Every</label>\n" +
-    "                        <input name=\"schedulerInterval\" id=\"schedulerInterval\" type=\"number\" class=\"scheduler-spinner\"\n" +
-    "                               ng-model=\"schedulerInterval\" min=\"1\" max=\"999\" ng-change=\"resetError('scheduler_interval_error')\">\n" +
-    "                        <label class=\"inline-label\" ng-bind=\"schedulerIntervalLabel\"></label>\n" +
+    "                        <div class=\"input-group\">\n" +
+    "                            <input name=\"schedulerInterval\" id=\"schedulerInterval\" type=\"number\" class=\"form-control\"\n" +
+    "                                   ng-model=\"schedulerInterval\" min=\"1\" max=\"999\" ng-change=\"resetError('scheduler_interval_error')\">\n" +
+    "                            <span class=\"input-group-addon\" ng-bind=\"schedulerIntervalLabel\"></span>\n" +
+    "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_interval_error\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -93,7 +95,7 @@ module.run(["$templateCache", function($templateCache) {
     "                                          id=\"monthlyRepeatOption\"> on day</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
-    "                            <input name=\"monthDay\" id=\"monthDay\" type=\"number\" class=\"scheduler-spinner\"\n" +
+    "                            <input name=\"monthDay\" id=\"monthDay\" type=\"number\" class=\"form-control\"\n" +
     "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
@@ -131,7 +133,7 @@ module.run(["$templateCache", function($templateCache) {
     "                                    ng-disabled=\"yearlyRepeatOption != 'month'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
-    "                            <input name=\"yearlyMonthDay\" id=\"yearlyMonthDay\" type=\"number\" class=\"scheduler-spinner\"\n" +
+    "                            <input name=\"yearlyMonthDay\" id=\"yearlyMonthDay\" type=\"number\" class=\"form-control\"\n" +
     "                                   ng-model=\"yearlyMonthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_yearlyMonthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_yearlyMonthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
@@ -191,9 +193,9 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-4\" ng-show=\"schedulerEnd && schedulerEnd.value == 'after'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "                        <div class=\"input-group\">\n" +
-    "                            <input type=\"number\" ng-name=\"schedulerOccurrenceCount\" ng-id=\"schedulerOccurrenceCount\" class=\"scheduler-spinner\"\n" +
+    "                            <input type=\"number\" ng-name=\"schedulerOccurrenceCount\" ng-id=\"schedulerOccurrenceCount\" class=\"form-control\"\n" +
     "                                   ng-model=\"schedulerOccurrenceCount\" min=\"1\" max=\"999\" on-change=\"resetError('scheduler_occurrenceCount_error')\">\n" +
-    "                            <label class=\"inline-label\">Occurrence(s)</label>\n" +
+    "                            <span class=\"input-group-addon\">Occurrence(s)</span>\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_occurrenceCount_error\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +

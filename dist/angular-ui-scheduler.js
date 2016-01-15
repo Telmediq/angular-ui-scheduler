@@ -71,14 +71,13 @@ angular.module('angular-ui-scheduler')
         // region default values
         var defaultDate = new Date(),
             defaultMonth = $filter('schZeroPad')(defaultDate.getMonth() + 1, 2),
-            defaultDay = $filter('schZeroPad')(defaultDate.getDate(), 2),
-            defaultDateStr = defaultMonth + '/' + defaultDay + '/' + defaultDate.getFullYear();
+            defaultDay = $filter('schZeroPad')(defaultDate.getDate(), 2);
         $scope.schedulerName = '';
         $scope.weekDays = [];
         $scope.schedulerStartHour = '00';
         $scope.schedulerStartMinute = '00';
         $scope.schedulerStartSecond = '00';
-        $scope.schedulerStartDt = defaultDateStr;
+        $scope.schedulerStartDt = defaultDate;
         $scope.schedulerFrequency = $scope.frequencyOptions[0];
         $scope.schedulerShowEvery = false;
         $scope.schedulerEnd = $scope.endOptions[0];
