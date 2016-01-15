@@ -6,46 +6,34 @@ A UI widget for creating or editing repeating calendar entries. Dynamically inje
 Installing
 ---------
 
-bower install angular-ui-scheduler
+    bower install angular-ui-scheduler
 
-Sample App
+Demo App
 ----------
+See contributing below and then  
 
-An example application is included along with a simple node based web server. With [node](http://nodejs.org) installed, run the following to start the server:
-
-    node ./scripts/web-server.js 8000
-
-Visit the sample by pointing your browser to http://localhost:8000/app/index.html
-
+    npm start
 
 Contributing
 ------------
-After cloning the repo, install the the bower packages listed in bower.json: 
+Regular setup: 
   
+    npm install -g gulp
+    npm install -g live-server
+
     bower install
+    npm install
 
-Install the npm packages listed in package.json:
+To build
+
+    gulp build watch
     
-    node install
+To test
 
-Install [Grunt](http://www.gruntjs.com) command line:
-    
-    npm install -g grunt-cli
+    gulp test
 
-From the project root run the grunt command. This will execute the default steps found in Gruntfile.js, which will lint and minify the javascript and css files:
 
-    grunt
-
-You should see output similar to the following:
-
-    Running "jshint:uses_defaults" (jshint) task
-    >> 2 files lint free.
-
-    Running "uglify:my_target" (uglify) task
-    File "lib/angular-scheduler.min.js" created.
-
-    Running "less:production" (less) task
-    File lib/angular-scheduler.min.css created.
+---
 
 Run tests found in the ./tests directory. GetRRule.js provides a set of unit tests. Install [Karma](http://karma-runner.github.io/0.12/index.html), and launch with the folllowing:
 

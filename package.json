@@ -38,5 +38,8 @@
   },
   "engines": {
     "node": ">=0.10.0"
+  },
+  "scripts" : {
+    "start": "live-server --open=demo"
   }
 }
