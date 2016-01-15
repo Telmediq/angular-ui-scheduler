@@ -9,7 +9,7 @@
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('CreateObject', function (useTimezone, $filter, GetRule, Inject, InjectDetail, SetDefaults, $timezones, SetRule, InRange) {
+    .factory('CreateObject', function (useTimezone, $filter, GetRule, SetDefaults, $timezones, SetRule, InRange) {
         return function (scope, requireFutureST) {
             var fn = function () {
 
@@ -229,17 +229,6 @@ angular.module('angular-ui-scheduler')
 
                 this.setName = function (name) {
                     this.scope.schedulerName = name;
-                };
-
-                // Read in the HTML partial, compile and inject it into the DOM.
-                // Pass in the target element's id attribute value or an angular.element()
-                // object.
-                this.inject = function (element, showButtons) {
-                    return Inject({scope: this.scope, target: element, buttons: showButtons});
-                };
-
-                this.injectDetail = function (element, showRRule) {
-                    return InjectDetail({scope: this.scope, target: element, showRRule: showRRule});
                 };
 
                 // Clear the form, returning all elements to a default state
