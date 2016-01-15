@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>angular-ui-scheduler | Demo</title>
     <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
     <!-- endbower -->
     <link rel="stylesheet" href="/dist/angular-ui-scheduler.css">
     <link rel="stylesheet/less" type="text/css" href="/demo/css/sampleApp.less">
@@ -44,24 +44,13 @@
                         <td>{{ schedulerName }}</td>
                     </tr>
                     <tr>
-                        <td>schedulerStartDt</td>
-                        <td>{{ schedulerStartDt | date:'medium' }}</td>
+                        <td>schedulerTime</td>
+                        <td>{{ schedulerUTCTime | date:'medium' }}</td>
                     </tr>
-                    <tr>
-                        <td>schedulerStartHour</td>
-                        <td>{{ schedulerStartHour }}</td>
-                    </tr>
-                    <tr>
-                        <td>schedulerStartMinute</td>
-                        <td>{{ schedulerStartMinute }}</td>
-                    </tr>
-                    <tr>
-                        <td>schedulerStartSecond</td>
-                        <td>{{ schedulerStartSecond }}</td>
-                    </tr>
+
                     <tr ng-show="schedulerShowTimeZone">
-                        <td>schedulerTimeZone.name</td>
-                        <td>{{ schedulerTimeZone.name }}</td>
+                        <td>schedulerTimeZone</td>
+                        <td>{{ schedulerTimeZone }}</td>
                     </tr>
                     <tr>
                         <td>schedulerUTCTime</td>

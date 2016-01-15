@@ -29,12 +29,12 @@ module.run(["$templateCache", function($templateCache) {
     "                        <label><span class=\"red-text\">*</span> Start Time <span class=\"fmt-help\">HH24:MM:SS</span><span class=\"fmt-help\" ng-show=\"!schedulerShowTimeZone\">UTC</span></label>\n" +
     "                        <div class=\"form-inline\">\n" +
     "                            <input name=\"schedulerStartHour\" id=\"schedulerStartHour\" type=\"number\" class=\"form-control\"\n" +
-    "                                   ng-model=\"schedulerStartHour\" min=\"0\" max=\"23\" required\n" +
+    "                                   ng-model=\"schedulerStartHour\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"23\" required\n" +
     "                                   ng-change=\"scheduleTimeChange()\">\n" +
     "\n" +
-    "                            <span>:</span><input name=\"schedulerStartMinute\" id=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" min=\"0\" max=\"59\" required\n" +
+    "                            <span>:</span><input name=\"schedulerStartMinute\" id=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required\n" +
     "                                                 ng-change=\"scheduleTimeChange()\">\n" +
-    "                            <span>:</span><input name=\"schedulerStartSecond\" id=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\"\n" +
+    "                            <span>:</span><input name=\"schedulerStartSecond\" id=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\" ng-model-options=\"{ getterSetter: true }\"\n" +
     "                                                 min=\"0\" max=\"59\" required ng-change=\"scheduleTimeChange()\">\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_startTime_error\">Time must be in HH24:MM:SS format</div>\n" +
@@ -86,11 +86,10 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"\n" +
-    "                                          id=\"monthlyRepeatOption\"> on day</label>\n" +
+    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on day</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
-    "                            <input name=\"monthDay\" id=\"monthDay\" type=\"number\" class=\"form-control\"\n" +
+    "                            <input name=\"monthDay\" id=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"monthlyRepeatOption != 'day'\"\n" +
     "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
@@ -102,7 +101,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\" id=\"monthlyRepeatOption\"> on\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on\n" +
     "                                the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\">\n" +
@@ -121,14 +120,14 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\" id=\"yearlyRepeatOption\"> on</label>\n" +
+    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
     "                            <select name=\"yearlyMonth\" id=\"yearlyMonth\" ng-model=\"yearlyMonth\" ng-options=\"m.name for m in months\"\n" +
     "                                    ng-disabled=\"yearlyRepeatOption != 'month'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
-    "                            <input name=\"yearlyMonthDay\" id=\"yearlyMonthDay\" type=\"number\" class=\"form-control\"\n" +
+    "                            <input name=\"yearlyMonthDay\" id=\"yearlyMonthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"yearlyRepeatOption != 'month'\"\n" +
     "                                   ng-model=\"yearlyMonthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_yearlyMonthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_yearlyMonthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
@@ -140,8 +139,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"\n" +
-    "                                          id=\"yearlyRepeatOption\"> on the</label>\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-2 padding-top-slim\">\n" +
     "                            <select name=\"yearlyOccurrence\" id=\"yearlyOccurrence\" ng-model=\"yearlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +

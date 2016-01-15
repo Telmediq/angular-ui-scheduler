@@ -10,25 +10,6 @@
   font-weight: normal;
   text-align: center;
 }
-.angular-ui-scheduler .ui-spinner.ui-widget-content {
-  border-bottom-color: #ccc;
-  border-top-color: #ccc;
-  border-left-color: #ccc;
-  border-right-color: #ccc;
-}
-.angular-ui-scheduler .ui-spinner-button {
-  border-left-color: #ccc;
-  border-left-style: solid;
-  border-left-width: 1px;
-}
-.angular-ui-scheduler .scheduler-time-spinner {
-  width: 40px;
-  height: 24px;
-}
-.angular-ui-scheduler .scheduler-spinner {
-  width: 50px;
-  height: 24px;
-}
 .angular-ui-scheduler .fmt-help {
   font-size: 12px;
   font-weight: normal;
