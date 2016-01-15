@@ -13,7 +13,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
                         <label><span class="red-text">*</span> Start Date <span class="fmt-help"> mm/dd/yyyy</span></label>
-                        <input type="date" class="form-control" name="schedulerStartDt" id="schedulerStartDt" ng-model="schedulerStartDt" placeholder="mm/dd/yyyy" required
+                        <input type="date" class="form-control" name="schedulerUTCTime" id="schedulerUTCTime" ng-model="schedulerUTCTime" placeholder="mm/dd/yyyy" required
                                ng-change="scheduleTimeChange()">
 
                     </div>
@@ -50,12 +50,7 @@
                                 required class="form-control " ng-change="scheduleTimeChange()"></select>
                     </div>
                 </div>
-                <div class="col-md-4" ng-show="schedulerShowUTCStartTime">
-                    <div class="form-group">
-                        <label>UTC Start Time</label>
-                        <input type="text" name="schedulerUTCTime" ng-model="schedulerUTCTime" id="schedulerUTCTime" class="form-control " readonly>
-                    </div>
-                </div>
+
             </div>
 
             <div class="row">

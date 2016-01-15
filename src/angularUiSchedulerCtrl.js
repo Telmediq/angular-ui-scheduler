@@ -8,7 +8,7 @@
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', function($scope, $filter, $log, $timezones, useTimezone, showUTCField, InRange, GetRule, SetRule){
+    .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, $timezones, useTimezone, InRange, GetRule, SetRule) {
 
         //region defaults
         $scope.frequencyOptions = [
@@ -38,7 +38,7 @@ angular.module('angular-ui-scheduler')
         $scope.weekdays = [
             {name: 'Sunday', value: 'su'},
             {name: 'Monday', value: 'mo'},
-            {name: 'Tueday', value: 'tu'},
+            {name: 'Tuesday', value: 'tu'},
             {name: 'Wednesday', value: 'we'},
             {name: 'Thursday', value: 'th'},
             {name: 'Friday', value: 'fr'},
@@ -72,7 +72,7 @@ angular.module('angular-ui-scheduler')
         $scope.schedulerStartHour = 0;
         $scope.schedulerStartMinute = 0;
         $scope.schedulerStartSecond = 0;
-        $scope.schedulerStartDt = new Date();
+        $scope.schedulerUTCTime = moment().toDate();
         $scope.schedulerFrequency = $scope.frequencyOptions[0];
         $scope.schedulerShowEvery = false;
         $scope.schedulerEnd = $scope.endOptions[0];
@@ -356,7 +356,6 @@ angular.module('angular-ui-scheduler')
                 requireFutureStartTime = params.requireFutureStartTime || false;
 
             scope.schedulerShowTimeZone = useTimezone;
-            scope.schedulerShowUTCStartTime = showUTCField;
 
             scope.setDefaults = function () {
                 if (useTimezone) {
@@ -377,36 +376,23 @@ angular.module('angular-ui-scheduler')
             };
 
             scope.scheduleTimeChange = function () {
-                if (scope.schedulerStartDt === '' || scope.schedulerStartDt === null || scope.schedulerStartDt === undefined) {
-                    scope.startDateError('Provide a valid start date and time');
-                    scope.schedulerUTCTime = '';
-                }
-                else if (!(InRange(scope.schedulerStartHour, 0, 23, 2) && InRange(scope.schedulerStartMinute, 0, 59, 2) && InRange(scope.schedulerStartSecond, 0, 59, 2))) {
-                    scope.scheduler_startTime_error = true;
+                if (useTimezone) {
+                    scope.resetStartDate();
+                    try {
+
+                        //todo check
+                        scope.schedulerUTCTime = moment(scope.schedulerUTCTime).tz(schedulerTimeZone.name);
+
+                        scope.scheduler_form_schedulerStartDt_error = false;
+                        scope.scheduler_startTime_error = false;
+                    }
+                    catch (e) {
+                        scope.startDateError('Provide a valid start date and time');
+                    }
                 }
                 else {
-                    if (useTimezone) {
-                        scope.resetStartDate();
-                        try {
-                            var dateStr = scope.schedulerStartDt.replace(/(\d{2})\/(\d{2})\/(\d{4})/, function (match, p1, p2, p3) {
-                                return p3 + '-' + p1 + '-' + p2;
-                            });
-                            dateStr += 'T' + $filter('schZeroPad')(scope.schedulerStartHour, 2) + ':' + $filter('schZeroPad')(scope.schedulerStartMinute, 2) + ':' +
-                                $filter('schZeroPad')(scope.schedulerStartSecond, 2) + '.000Z';
-                            scope.schedulerUTCTime = $filter('schDateStrFix')($timezones.toUTC(dateStr, scope.schedulerTimeZone.name).toISOString());
-                            scope.scheduler_form_schedulerStartDt_error = false;
-                            scope.scheduler_startTime_error = false;
-                        }
-                        catch (e) {
-                            scope.startDateError('Provide a valid start date and time');
-                        }
-                    }
-                    else {
-                        scope.scheduler_startTime_error = false;
-                        scope.scheduler_form_schedulerStartDt_error = false;
-                        scope.schedulerUTCTime = $filter('schDateStrFix')(scope.schedulerStartDt + 'T' + scope.schedulerStartHour + ':' + scope.schedulerStartMinute +
-                            ':' + scope.schedulerStartSecond + '.000Z');
-                    }
+                    scope.scheduler_startTime_error = false;
+                    scope.scheduler_form_schedulerStartDt_error = false;
                 }
             };
 
@@ -463,25 +449,11 @@ angular.module('angular-ui-scheduler')
             };
 
             scope.startDateError = function (msg) {
-                if (scope.scheduler_form) {
-                    if (scope.scheduler_form.schedulerStartDt) {
-                        scope.scheduler_form_schedulerStartDt_error = msg;
-                        scope.scheduler_form.schedulerStartDt.$pristine = false;
-                        scope.scheduler_form.schedulerStartDt.$dirty = true;
-                    }
-                    $('#schedulerStartDt').removeClass('ng-pristine').removeClass('ng-valid').removeClass('ng-valid-custom-error')
-                        .addClass('ng-dirty').addClass('ng-invalid').addClass('ng-invalid-custom-error');
-                }
+                scope.scheduler_form_schedulerStartDt_error = msg;
             };
 
             scope.resetStartDate = function () {
-                if (scope.scheduler_form) {
-                    scope.scheduler_form_schedulerStartDt_error = '';
-                    if (scope.scheduler_form.schedulerStartDt) {
-                        scope.scheduler_form.schedulerStartDt.$setValidity('custom-error', true);
-                        scope.scheduler_form.schedulerStartDt.$setPristine();
-                    }
-                }
+                scope.scheduler_form_schedulerStartDt_error = '';
             };
 
             scope.schedulerEndChange = function () {
@@ -514,4 +486,4 @@ angular.module('angular-ui-scheduler')
         }
 
         $scope.scheduler = Init({scope: $scope, requireFutureStartTime: false});
-});
+    });

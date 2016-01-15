@@ -19,7 +19,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
-    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" id=\"schedulerStartDt\" ng-model=\"schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
+    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerUTCTime\" id=\"schedulerUTCTime\" ng-model=\"schedulerUTCTime\" placeholder=\"mm/dd/yyyy\" required\n" +
     "                               ng-change=\"scheduleTimeChange()\">\n" +
     "\n" +
     "                    </div>\n" +
@@ -56,12 +56,7 @@ module.run(["$templateCache", function($templateCache) {
     "                                required class=\"form-control \" ng-change=\"scheduleTimeChange()\"></select>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\" ng-show=\"schedulerShowUTCStartTime\">\n" +
-    "                    <div class=\"form-group\">\n" +
-    "                        <label>UTC Start Time</label>\n" +
-    "                        <input type=\"text\" name=\"schedulerUTCTime\" ng-model=\"schedulerUTCTime\" id=\"schedulerUTCTime\" class=\"form-control \" readonly>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"row\">\n" +
@@ -168,13 +163,13 @@ module.run(["$templateCache", function($templateCache) {
     "                <label><span class=\"red-text\">*</span> On Days</label>\n" +
     "                <div class=\"input-group\">\n" +
     "                    <div class=\"btn-group\" data-toggle=\"buttons-checkbox\" id=\"weekdaySelect\">\n" +
-    "                        <button type=\"button\" ng-class=\"weekDaySUClass\" class=\"btn btn-default\" data-value=\"SU\" ng-click=\"setWeekday($event,'su')\">Sun</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDayMOClass\" class=\"btn btn-default\" data-value=\"MO\" ng-click=\"setWeekday($event,'mo')\">Mon</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDayTUClass\" class=\"btn btn-default\" data-value=\"TU\" ng-click=\"setWeekday($event,'tu')\">Tue</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDayWEClass\" class=\"btn btn-default\" data-value=\"WE\" ng-click=\"setWeekday($event,'we')\">Wed</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDayTHClass\" class=\"btn btn-default\" data-value=\"TH\" ng-click=\"setWeekday($event,'th')\">Thu</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDayFRClass\" class=\"btn btn-default\" data-value=\"FR\" ng-click=\"setWeekday($event,'fr')\">Fri</button>\n" +
-    "                        <button type=\"button\" ng-class=\"weekDaySAClass\" class=\"btn btn-default\" data-value=\"SA\" ng-click=\"setWeekday($event,'sa')\">Sat</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"SU\" ng-click=\"setWeekday($event,'su')\">Sun</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"MO\" ng-click=\"setWeekday($event,'mo')\">Mon</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"TU\" ng-click=\"setWeekday($event,'tu')\">Tue</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"WE\" ng-click=\"setWeekday($event,'we')\">Wed</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"TH\" ng-click=\"setWeekday($event,'th')\">Thu</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"FR\" ng-click=\"setWeekday($event,'fr')\">Fri</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"SA\" ng-click=\"setWeekday($event,'sa')\">Sat</button>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"error\" ng-show=\"scheduler_weekDays_error\">Select one or more days</div>\n" +
