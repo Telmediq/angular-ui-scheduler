@@ -3,44 +3,6 @@ try { module = angular.module("angular-ui-scheduler"); }
 catch(err) { module = angular.module("angular-ui-scheduler", []); }
 module.run(["$templateCache", function($templateCache) {
   "use strict";
-  $templateCache.put("angular-ui-scheduler/src/angular-scheduler-detail.html",
-    "<div id=\"scheduler-detail\">\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"!schedulerIsValid\">\n" +
-    "        <p>The scheduler options are invalid or incomplete. Make the needed changes on the options tab, then come back here to see details.</p>\n" +
-    "    </div>\n" +
-    "    <div ng-show=\"schedulerIsValid\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <label>Description</label>\n" +
-    "            <textarea ng-model=\"rrule_nlp_description\" name=\"rrule_nlp_description\" id=\"rrule_nlp_description\" readonly class=\"form-control\" rows=\"2\"></textarea>\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\" ng-show=\"showRRule\">\n" +
-    "            <label>RRule</label>\n" +
-    "            <textarea ng-model=\"rrule\" name=\"rrule\" id=\"rrule\" readonly class=\"form-control\" rows=\"3\"></textarea>\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <label id=\"occurrences-label\">Occurrences <span class=\"sublabel\">(limited to first 10)</label>\n" +
-    "            <div id=\"date-choice\">\n" +
-    "                <label class=\"label-inline\">Date format</label>\n" +
-    "                <label class=\"radio-inline\"><input type=\"radio\" ng-model=\"dateChoice\" id=\"date-choice-local\" value=\"local\" >Local time</label>\n" +
-    "                <label class=\"radio-inline\"><input type=\"radio\" ng-model=\"dateChoice\" id=\"date-choice-utc\" value=\"utc\" >UTC</label>\n" +
-    "            </div>\n" +
-    "            <ul class=\"occurrence-list mono-space\" ng-show=\"dateChoice == 'utc'\">\n" +
-    "                <li ng-repeat=\"occurrence in occurrence_list\">{{ occurrence.utc }}</li>\n" +
-    "            </ul>\n" +
-    "            <ul class=\"occurrence-list mono-space\" ng-show=\"dateChoice == 'local'\">\n" +
-    "                <li ng-repeat=\"occurrence in occurrence_list\">{{ occurrence.local }}</li>\n" +
-    "            </ul>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>");
-}]);
-})();
-
-(function(module) {
-try { module = angular.module("angular-ui-scheduler"); }
-catch(err) { module = angular.module("angular-ui-scheduler", []); }
-module.run(["$templateCache", function($templateCache) {
-  "use strict";
   $templateCache.put("angular-ui-scheduler/src/angularUiScheduler.html",
     "<div class=\"row angular-ui-scheduler\">\n" +
     "    <div class=\"col-md-12\">\n" +
@@ -57,7 +19,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
-    "                        <input type=\"date\" class=\"form-control \" name=\"schedulerStartDt\" id=\"schedulerStartDt\" ng-model=\"schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
+    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" id=\"schedulerStartDt\" ng-model=\"schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
     "                               ng-change=\"scheduleTimeChange()\">\n" +
     "\n" +
     "                    </div>\n" +
@@ -65,13 +27,14 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-7\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Time <span class=\"fmt-help\">HH24:MM:SS</span><span class=\"fmt-help\" ng-show=\"!schedulerShowTimeZone\">UTC</span></label>\n" +
-    "                        <div class=\"input-group\">\n" +
-    "                            <input name=\"schedulerStartHour\" id=\"schedulerStartHour\" type=\"number\" class=\"scheduler-time-spinner\"\n" +
-    "                                   ng-model=\"schedulerStartHour\" placeholder=\"HH24\" min=\"0\" max=\"23\" required\n" +
+    "                        <div class=\"form-inline\">\n" +
+    "                            <input name=\"schedulerStartHour\" id=\"schedulerStartHour\" type=\"number\" class=\"form-control\"\n" +
+    "                                   ng-model=\"schedulerStartHour\" min=\"0\" max=\"23\" required\n" +
     "                                   ng-change=\"scheduleTimeChange()\">\n" +
-    "                            <span>:</span><input name=\"schedulerStartMinute\" id=\"schedulerStartMinute\" type=\"number\" class=\"scheduler-time-spinner\" ng-model=\"schedulerStartMinute\" placeholder=\"MM\"\n" +
-    "                                                 min=\"0\" max=\"59\" required ng-change=\"scheduleTimeChange()\">\n" +
-    "                            <span>:</span><input name=\"schedulerStartSecond\" id=\"schedulerStartSecond\" type=\"number\" class=\"scheduler-time-spinner\" ng-model=\"schedulerStartSecond\" placeholder=\"SS\"\n" +
+    "\n" +
+    "                            <span>:</span><input name=\"schedulerStartMinute\" id=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" min=\"0\" max=\"59\" required\n" +
+    "                                                 ng-change=\"scheduleTimeChange()\">\n" +
+    "                            <span>:</span><input name=\"schedulerStartSecond\" id=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\"\n" +
     "                                                 min=\"0\" max=\"59\" required ng-change=\"scheduleTimeChange()\">\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_startTime_error\">Time must be in HH24:MM:SS format</div>\n" +

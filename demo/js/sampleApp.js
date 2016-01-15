@@ -9,6 +9,7 @@ angular.module('sampleApp', ['angular-ui-scheduler'])
 
     .constant('useTimezone', true)
     .constant('showUTCField', true)
+    .constant('$timezones.definitions.location', '/bower_components/angular-tz-extensions/tz/data')
 
     .controller('sampleController', function ($scope, $filter, SchedulerInit) {
 
