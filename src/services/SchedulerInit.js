@@ -9,7 +9,7 @@
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('SchedulerInit', function ($log, $filter, $timezones, LoadLookupValues, SetDefaults, CreateObject, useTimezone, showUTCField, InRange) {
+    .factory('SchedulerInit', function ($log, $filter, $timezones, CreateObject, useTimezone, showUTCField, InRange) {
             return function (params) {
 
                 var scope = params.scope,
@@ -30,8 +30,8 @@ angular.module('angular-ui-scheduler')
                             return x.name === scope.current_timezone.name;
                         });
                     }
-                    LoadLookupValues(scope);
-                    SetDefaults(scope);
+                    //LoadLookupValues(scope);
+                    //SetDefaults(scope);
                     scope.scheduleTimeChange();
                     scope.scheduleRepeatChange();
                 };

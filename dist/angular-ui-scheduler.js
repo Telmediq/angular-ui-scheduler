@@ -12,8 +12,105 @@ angular.module('angular-ui-scheduler', [])
  * @requires $scope
  * */
 angular.module('angular-ui-scheduler')
-    .controller('angularUiSchedulerCtrl', ["$scope", function($scope){
+    .controller('angularUiSchedulerCtrl', ["$scope", "$filter", function($scope, $filter){
 
+        //region defaults
+        $scope.frequencyOptions = [
+            {name: 'None (run once)', value: 'none', intervalLabel: ''},
+            {name: 'Minute', value: 'minutely', intervalLabel: 'minutes'},
+            {name: 'Hour', value: 'hourly', intervalLabel: 'hours'},
+            {name: 'Day', value: 'daily', intervalLabel: 'days'},
+            {name: 'Week', value: 'weekly', intervalLabel: 'weeks'},
+            {name: 'Month', value: 'monthly', intervalLabel: 'months'},
+            {name: 'Year', value: 'yearly', intervalLabel: 'years'}
+        ];
+
+        $scope.endOptions = [
+            {name: 'Never', value: 'never'},
+            {name: 'After', value: 'after'},
+            {name: 'On Date', value: 'on'}
+        ];
+
+        $scope.occurrences = [
+            {name: 'first', value: 1},
+            {name: 'second', value: 2},
+            {name: 'third', value: 3},
+            {name: 'fourth', value: 4},
+            {name: 'last', value: -1}
+        ];
+
+        $scope.weekdays = [
+            {name: 'Sunday', value: 'su'},
+            {name: 'Monday', value: 'mo'},
+            {name: 'Tueday', value: 'tu'},
+            {name: 'Wednesday', value: 'we'},
+            {name: 'Thursday', value: 'th'},
+            {name: 'Friday', value: 'fr'},
+            {name: 'Saturday', value: 'sa'},
+            {name: 'Day', value: ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su']},
+            {name: 'Weekday', value: ['mo', 'tu', 'we', 'th', 'fr']},
+            {name: 'Weekend day', value: ['sa', 'su']}
+        ];
+
+        $scope.months = [
+            {name: 'January', value: 1},
+            {name: 'February', value: 2},
+            {name: 'March', value: 3},
+            {name: 'April', value: 4},
+            {name: 'May', value: 5},
+            {name: 'June', value: 6},
+            {name: 'July', value: 7},
+            {name: 'August', value: 8},
+            {name: 'September', value: 9},
+            {name: 'October', value: 10},
+            {name: 'November', value: 11},
+            {name: 'December', value: 12}
+        ];
+        //endregion
+
+
+        // region default values
+        var defaultDate = new Date(),
+            defaultMonth = $filter('schZeroPad')(defaultDate.getMonth() + 1, 2),
+            defaultDay = $filter('schZeroPad')(defaultDate.getDate(), 2),
+            defaultDateStr = defaultMonth + '/' + defaultDay + '/' + defaultDate.getFullYear();
+        $scope.schedulerName = '';
+        $scope.weekDays = [];
+        $scope.schedulerStartHour = '00';
+        $scope.schedulerStartMinute = '00';
+        $scope.schedulerStartSecond = '00';
+        $scope.schedulerStartDt = defaultDateStr;
+        $scope.schedulerFrequency = $scope.frequencyOptions[0];
+        $scope.schedulerShowEvery = false;
+        $scope.schedulerEnd = $scope.endOptions[0];
+        $scope.schedulerInterval = 1;
+        $scope.schedulerOccurrenceCount = 1;
+        $scope.monthlyRepeatOption = 'day';
+        $scope.monthDay = 1;
+        $scope.monthlyOccurrence = $scope.occurrences[0];
+        $scope.monthlyWeekDay = $scope.weekdays[0];
+        $scope.yearlyRepeatOption = 'month';
+        $scope.yearlyMonth = $scope.months[0];
+        $scope.yearlyMonthDay = 1;
+        $scope.yearlyWeekDay = $scope.weekdays[0];
+        $scope.yearlyOtherMonth = $scope.months[0];
+        $scope.yearlyOccurrence = $scope.occurrences[0];
+        $scope.weekDayMOClass = '';
+        $scope.weekDayTUClass = '';
+        $scope.weekDayWEClass = '';
+        $scope.weekDayTHClass = '';
+        $scope.weekDayFRClass = '';
+        $scope.weekDaySAClass = '';
+        $scope.weekDaySUClass = '';
+
+        //Detail view
+        $scope.schedulerIsValid = false;
+        $scope.rrule_nlp_description = '';
+        $scope.rrule = '';
+        $scope.dateChoice = 'utc';
+        $scope.occurrence_list = [];
+
+        //endregion
 }]);
 
 /**
@@ -36,31 +133,6 @@ angular.module('angular-ui-scheduler')
             }
         };
 });
-
-/**
- * @ngdoc directive
- * @name angular-ui-scheduler:schTooltipDirective
- *
- * @description
- *
- *
- * @restrict A
- * */
-angular.module('angular-ui-scheduler')
-    .directive('schTooltip', function () {
-        return {
-            link: function (scope, element, attrs) {
-                var placement = (attrs.placement) ? attrs.placement : 'top';
-                $(element).tooltip({
-                    html: true,
-                    placement: placement,
-                    title: attrs.afTooltip,
-                    trigger: 'hover',
-                    container: 'body'
-                });
-            }
-        };
-    });
 
 /**
  * @ngdoc service
@@ -106,7 +178,7 @@ angular.module('angular-ui-scheduler')
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('CreateObject', ["useTimezone", "$filter", "GetRule", "Inject", "InjectDetail", "SetDefaults", "$timezones", "SetRule", "InRange", function (useTimezone, $filter, GetRule, Inject, InjectDetail, SetDefaults, $timezones, SetRule, InRange) {
+    .factory('CreateObject', ["useTimezone", "$filter", "GetRule", "SetDefaults", "$timezones", "SetRule", "InRange", function (useTimezone, $filter, GetRule, SetDefaults, $timezones, SetRule, InRange) {
         return function (scope, requireFutureST) {
             var fn = function () {
 
@@ -328,17 +400,6 @@ angular.module('angular-ui-scheduler')
                     this.scope.schedulerName = name;
                 };
 
-                // Read in the HTML partial, compile and inject it into the DOM.
-                // Pass in the target element's id attribute value or an angular.element()
-                // object.
-                this.inject = function (element, showButtons) {
-                    return Inject({scope: this.scope, target: element, buttons: showButtons});
-                };
-
-                this.injectDetail = function (element, showRRule) {
-                    return InjectDetail({scope: this.scope, target: element, showRRule: showRRule});
-                };
-
                 // Clear the form, returning all elements to a default state
                 this.clear = function () {
                     this.clearErrors();
@@ -483,148 +544,6 @@ angular.module('angular-ui-scheduler')
     });
 
 /**
- * @ngdoc factory
- * @name angular-ui-scheduler:InjectDetail
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-    .factory('InjectDetail', ["scheduler_partial", "$compile", "$http", function (scheduler_partial, $compile, $http) {
-        return function (params) {
-
-            var scope = params.scope,
-                target = params.target,
-                showRRule = params.showRRule;
-
-            scope.showRRule = showRRule || false;
-
-            if (scope.removeHtmlDetailReady) {
-                scope.removeHtmlDetailReady();
-            }
-            scope.removeHtmlDetailReady = scope.$on('htmlDetailReady', function (e, data) {
-                var element = (angular.isObject(target)) ? target : angular.element(document.getElementById(target));
-                element.html(data);
-                $compile(element)(scope);
-            });
-
-            $http({method: 'GET', url: scheduler_partial + 'angular-scheduler-detail.html'})
-                .success(function (data) {
-                    scope.$emit('htmlDetailReady', data);
-                })
-                .error(function (data, status) {
-                    throw('Error reading ' + scheduler_partial + 'angular-scheduler-detail.html. ' + status);
-                    //$log.error('Error calling ' + scheduler_partial + '. ' + status);
-                });
-        };
-    }]);
-
-/**
- * @ngdoc service
- * @name angular-ui-scheduler:InjectFactory
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-    .factory('Inject', ["scheduler_partial", "$compile", "$http", function (scheduler_partial, $compile, $http) {
-        return function (params) {
-
-            var scope = params.scope,
-                target = params.target,
-                buttons = params.buttons;
-
-            if (scope.removeHtmlReady) {
-                scope.removeHtmlReady();
-            }
-            scope.removeHtmlReady = scope.$on('htmlReady', function (e, data) {
-                var element = (angular.isObject(target)) ? target : angular.element(document.getElementById(target));
-                element.html(data);
-                $compile(element)(scope);
-                if (buttons) {
-                    $('#scheduler-buttons').show();
-                }
-            });
-
-            $http({method: 'GET', url: scheduler_partial + 'angular-scheduler.html'})
-                .success(function (data) {
-                    scope.$emit('htmlReady', data);
-                })
-                .error(function (data, status) {
-                    throw('Error reading ' + scheduler_partial + 'angular-scheduler.html. ' + status);
-                });
-        };
-    }]);
-/**
- * @ngdoc service
- * @name angular-ui-scheduler:LoadLookupValues
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-
-    .factory('LoadLookupValues', function () {
-        return function (scope) {
-
-            scope.frequencyOptions = [
-                {name: 'None (run once)', value: 'none', intervalLabel: ''},
-                {name: 'Minute', value: 'minutely', intervalLabel: 'minutes'},
-                {name: 'Hour', value: 'hourly', intervalLabel: 'hours'},
-                {name: 'Day', value: 'daily', intervalLabel: 'days'},
-                {name: 'Week', value: 'weekly', intervalLabel: 'weeks'},
-                {name: 'Month', value: 'monthly', intervalLabel: 'months'},
-                {name: 'Year', value: 'yearly', intervalLabel: 'years'}
-            ];
-
-            scope.endOptions = [
-                {name: 'Never', value: 'never'},
-                {name: 'After', value: 'after'},
-                {name: 'On Date', value: 'on'}
-            ];
-
-            scope.occurrences = [
-                {name: 'first', value: 1},
-                {name: 'second', value: 2},
-                {name: 'third', value: 3},
-                {name: 'fourth', value: 4},
-                {name: 'last', value: -1}
-            ];
-
-            scope.weekdays = [
-                {name: 'Sunday', value: 'su'},
-                {name: 'Monday', value: 'mo'},
-                {name: 'Tueday', value: 'tu'},
-                {name: 'Wednesday', value: 'we'},
-                {name: 'Thursday', value: 'th'},
-                {name: 'Friday', value: 'fr'},
-                {name: 'Saturday', value: 'sa'},
-                {name: 'Day', value: ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su']},
-                {name: 'Weekday', value: ['mo', 'tu', 'we', 'th', 'fr']},
-                {name: 'Weekend day', value: ['sa', 'su']}
-            ];
-
-            scope.months = [
-                {name: 'January', value: 1},
-                {name: 'February', value: 2},
-                {name: 'March', value: 3},
-                {name: 'April', value: 4},
-                {name: 'May', value: 5},
-                {name: 'June', value: 6},
-                {name: 'July', value: 7},
-                {name: 'August', value: 8},
-                {name: 'September', value: 9},
-                {name: 'October', value: 10},
-                {name: 'November', value: 11},
-                {name: 'December', value: 12}
-            ];
-
-        };
-    });
-/**
  * @ngdoc service
  * @name angular-ui-scheduler:SchedulerInit
  *
@@ -635,7 +554,7 @@ angular.module('angular-ui-scheduler')
  *
  * */
 angular.module('angular-ui-scheduler')
-    .factory('SchedulerInit', ["$log", "$filter", "$timezones", "LoadLookupValues", "SetDefaults", "CreateObject", "useTimezone", "showUTCField", "InRange", function ($log, $filter, $timezones, LoadLookupValues, SetDefaults, CreateObject, useTimezone, showUTCField, InRange) {
+    .factory('SchedulerInit', ["$log", "$filter", "$timezones", "CreateObject", "useTimezone", "showUTCField", "InRange", function ($log, $filter, $timezones, CreateObject, useTimezone, showUTCField, InRange) {
             return function (params) {
 
                 var scope = params.scope,
@@ -656,8 +575,8 @@ angular.module('angular-ui-scheduler')
                             return x.name === scope.current_timezone.name;
                         });
                     }
-                    LoadLookupValues(scope);
-                    SetDefaults(scope);
+                    //LoadLookupValues(scope);
+                    //SetDefaults(scope);
                     scope.scheduleTimeChange();
                     scope.scheduleRepeatChange();
                 };
@@ -799,59 +718,6 @@ angular.module('angular-ui-scheduler')
 
             };
         }]);
-/**
- * @ngdoc service
- * @name angular-ui-scheduler:SetDefaults
- *
- * @description
- *
- *
- * */
-angular.module('angular-ui-scheduler')
-    .factory('SetDefaults', ["$filter", function ($filter) {
-        return function (scope) {
-            // Set default values
-            var defaultDate = new Date(),
-                defaultMonth = $filter('schZeroPad')(defaultDate.getMonth() + 1, 2),
-                defaultDay = $filter('schZeroPad')(defaultDate.getDate(), 2),
-                defaultDateStr = defaultMonth + '/' + defaultDay + '/' + defaultDate.getFullYear();
-            scope.schedulerName = '';
-            scope.weekDays = [];
-            scope.schedulerStartHour = '00';
-            scope.schedulerStartMinute = '00';
-            scope.schedulerStartSecond = '00';
-            scope.schedulerStartDt = defaultDateStr;
-            scope.schedulerFrequency = scope.frequencyOptions[0];
-            scope.schedulerShowEvery = false;
-            scope.schedulerEnd = scope.endOptions[0];
-            scope.schedulerInterval = 1;
-            scope.schedulerOccurrenceCount = 1;
-            scope.monthlyRepeatOption = 'day';
-            scope.monthDay = 1;
-            scope.monthlyOccurrence = scope.occurrences[0];
-            scope.monthlyWeekDay = scope.weekdays[0];
-            scope.yearlyRepeatOption = 'month';
-            scope.yearlyMonth = scope.months[0];
-            scope.yearlyMonthDay = 1;
-            scope.yearlyWeekDay = scope.weekdays[0];
-            scope.yearlyOtherMonth = scope.months[0];
-            scope.yearlyOccurrence = scope.occurrences[0];
-            scope.weekDayMOClass = '';
-            scope.weekDayTUClass = '';
-            scope.weekDayWEClass = '';
-            scope.weekDayTHClass = '';
-            scope.weekDayFRClass = '';
-            scope.weekDaySAClass = '';
-            scope.weekDaySUClass = '';
-
-            //Detail view
-            scope.schedulerIsValid = false;
-            scope.rrule_nlp_description = '';
-            scope.rrule = '';
-            scope.dateChoice = 'utc';
-            scope.occurrence_list = [];
-        };
-    }]);
 /**
  * @ngdoc service
  * @name angular-ui-scheduler:SetRule
