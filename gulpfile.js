@@ -1,19 +1,24 @@
-var gulp = require('gulp');
-
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var ngAnnotate = require('gulp-ng-annotate');
-var jshint = require('gulp-jshint');
-var html2js = require('gulp-html2js');
-var less = require('gulp-less');
-var merge = require('merge-stream');
-var rename = require("gulp-rename");
-var KarmaServer = require('karma').Server;
-var wiredep = require('wiredep').stream;
-var _ = require('lodash');
-var gzip = require('gulp-gzip');
-var rimraf = require('rimraf');
+var gulp = require('gulp'),
+    sourcemaps = require('gulp-sourcemaps'),
+    uglify = require('gulp-uglify'),
+    concat = require('gulp-concat'),
+    ngAnnotate = require('gulp-ng-annotate'),
+    jshint = require('gulp-jshint'),
+    html2js = require('gulp-html2js'),
+    less = require('gulp-less'),
+    merge = require('merge-stream'),
+    rename = require("gulp-rename"),
+    KarmaServer = require('karma').Server,
+    wiredep = require('wiredep').stream,
+    _ = require('lodash'),
+    gzip = require('gulp-gzip'),
+    rimraf = require('rimraf'),
+    git = require('gulp-git'),
+    filter = require('gulp-filter'),
+    runSequence = require('run-sequence'),
+    bump = require('gulp-bump'),
+    gutil = require('gulp-util'),
+    fs = require('fs');
 
 var paths = {
     dist: 'dist/',
@@ -157,31 +162,31 @@ function testPipeFactory(tests, scripts, partials, karmaConfigName) {
                 });
 
                 var karmaConfig = {
-                        basePath: '.',
-                        frameworks: ['jasmine'],
-                        files: files,
-                        preprocessors: preprocessorConf,
-                        reporters: ['progress', 'coverage', 'junit'],
-                        coverageReporter: {
-                            reporters: [{
-                                type: 'text-summary'
-                            }, {
-                                type: 'lcov',
-                                dir: 'coverage/'
-                            }
-                            ]
-                        },
-                        junitReporter: {
-                            outputDir: (process.env['CIRCLE_TEST_REPORTS'] || '$CIRCLE_TEST_REPORTS') + '/js/',
-                            outputFile: 'TEST-shared.xml'
-                        },
-                        colors: true,
-                        browsers: ['PhantomJS'],
-                        captureTimeout: 60000,
-                        port: 9876,
-                        singleRun: true,
-                        autoWatch: false
-                    };
+                    basePath: '.',
+                    frameworks: ['jasmine'],
+                    files: files,
+                    preprocessors: preprocessorConf,
+                    reporters: ['progress', 'coverage', 'junit'],
+                    coverageReporter: {
+                        reporters: [{
+                            type: 'text-summary'
+                        }, {
+                            type: 'lcov',
+                            dir: 'coverage/'
+                        }
+                        ]
+                    },
+                    junitReporter: {
+                        outputDir: (process.env['CIRCLE_TEST_REPORTS'] || '$CIRCLE_TEST_REPORTS') + '/js/',
+                        outputFile: 'TEST-shared.xml'
+                    },
+                    colors: true,
+                    browsers: ['PhantomJS'],
+                    captureTimeout: 60000,
+                    port: 9876,
+                    singleRun: true,
+                    autoWatch: false
+                };
 
                 //save config
                 var fs = require('fs');
@@ -247,4 +252,53 @@ gulp.task('wiredep', function () {
         .pipe(gulp.dest(function (item) {
             return item.base;
         }));
+});
+
+//------------ publishing
+gulp.task('bump-patch-version', function () {
+    return gulp.src(['./bower.json', './package.json'])
+        .pipe(bump({type: "patch"}).on('error', gutil.log))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('commit-changes', function () {
+    return gulp.src('.')
+        .pipe(git.commit('Bumped version number'));
+});
+
+gulp.task('push-changes', function (cb) {
+    git.push('origin', 'master', cb);
+});
+
+gulp.task('create-new-tag', function (cb) {
+    var version = getPackageJsonVersion();
+    git.tag(version, 'Created Tag for version: ' + version, function (error) {
+        if (error) {
+            return cb(error);
+        }
+        git.push('origin', 'master', {args: '--tags'}, cb);
+    });
+
+    function getPackageJsonVersion() {
+        //We parse the json file instead of using require because require caches multiple calls so the version number won't be updated
+        return JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+    }
+});
+
+gulp.task('release', function (callback) {
+    runSequence(
+        //'default',
+        'build',
+        'bump-patch-version',
+        'commit-changes',
+        'push-changes',
+        'create-new-tag',
+        function (error) {
+            if (error) {
+                console.log(error.message);
+            } else {
+                console.log('RELEASE FINISHED SUCCESSFULLY');
+            }
+            callback(error);
+        });
 });
