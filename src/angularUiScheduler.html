@@ -3,13 +3,7 @@
 
         <form class="form" role="form" name="scheduler_form" novalidate>
 
-            <div class="form-group">
-                <label><span class="red-text">*</span> Name</label>
-                <input type="text" class="form-control " name="schedulerName" id="schedulerName" ng-model="schedulerName" required placeholder="Schedule name">
-                <div class="error" ng-show="scheduler_form.schedulerName.$dirty && scheduler_form.schedulerName.$error.required">Schedule name is required</div>
-            </div>
-
-            <div class="row">
+            <div class="row" ng-if="!hideStart">
                 <div class="col-md-5">
                     <div class="form-group">
                         <label><span class="red-text">*</span> Start Date <span class="fmt-help"> mm/dd/yyyy</span></label>
@@ -36,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="row error-pull-up">
+            <div class="row error-pull-up" ng-if="!hideStart">
                 <div class="col-md-12">
                     <div class="error" ng-show="scheduler_form_schedulerStartDt_error" ng-bind="scheduler_form_schedulerStartDt_error"></div>
                 </div>

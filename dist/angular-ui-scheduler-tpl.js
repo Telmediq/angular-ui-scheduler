@@ -9,13 +9,7 @@ module.run(["$templateCache", function($templateCache) {
     "\n" +
     "        <form class=\"form\" role=\"form\" name=\"scheduler_form\" novalidate>\n" +
     "\n" +
-    "            <div class=\"form-group\">\n" +
-    "                <label><span class=\"red-text\">*</span> Name</label>\n" +
-    "                <input type=\"text\" class=\"form-control \" name=\"schedulerName\" id=\"schedulerName\" ng-model=\"schedulerName\" required placeholder=\"Schedule name\">\n" +
-    "                <div class=\"error\" ng-show=\"scheduler_form.schedulerName.$dirty && scheduler_form.schedulerName.$error.required\">Schedule name is required</div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "            <div class=\"row\">\n" +
+    "            <div class=\"row\" ng-if=\"!hideStart\">\n" +
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
@@ -42,7 +36,7 @@ module.run(["$templateCache", function($templateCache) {
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row error-pull-up\">\n" +
+    "            <div class=\"row error-pull-up\" ng-if=\"!hideStart\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"error\" ng-show=\"scheduler_form_schedulerStartDt_error\" ng-bind=\"scheduler_form_schedulerStartDt_error\"></div>\n" +
     "                </div>\n" +

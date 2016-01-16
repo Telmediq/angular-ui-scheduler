@@ -57,11 +57,15 @@ angular.module('angular-ui-scheduler')
     ])
     .controller('angularUiSchedulerCtrl', function ($scope, $filter, $log, rRuleHelper,
                                                     angular_ui_scheduler_useTimezone,
+                                                    angular_ui_scheduler_hideStart,
                                                     angular_ui_scheduler_frequencyOptions,
                                                     angular_ui_scheduler_endOptions,
                                                     angular_ui_scheduler_occurrences,
                                                     angular_ui_scheduler_weekdays,
                                                     angular_ui_scheduler_months) {
+
+
+        $scope.hideStart = angular_ui_scheduler_hideStart;
 
         //region defaults
         $scope.frequencyOptions = angular_ui_scheduler_frequencyOptions;
@@ -78,7 +82,6 @@ angular.module('angular-ui-scheduler')
 
         // region default values
 
-        $scope.schedulerName = '';
         $scope.weekDays = [];
         $scope.schedulerStartHour = function (value) {
             if (arguments.length) {
@@ -189,7 +192,6 @@ angular.module('angular-ui-scheduler')
                 var rule = this.getRRule(),
                     options = rRuleHelper.getOptions(this.scope);
                 return {
-                    name: this.scope.schedulerName,
                     rrule: this.getRRule().toString(),
                     options: options
                 };
@@ -200,16 +202,9 @@ angular.module('angular-ui-scheduler')
                 return rRuleHelper.setRule(rule, this.scope);
             };
 
-            this.setName = function (name) {
-                this.scope.schedulerName = name;
-            };
-
             // Clear the form, returning all elements to a default state
             this.clear = function () {
                 this.clearErrors();
-                if (this.scope.scheduler_form && this.scope.scheduler_form.schedulerName) {
-                    this.scope.scheduler_form.schedulerName.$setPristine();
-                }
                 this.scope.setDefaults();
             };
 

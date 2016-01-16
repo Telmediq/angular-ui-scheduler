@@ -187,11 +187,6 @@ angular.module('angular-ui-scheduler')
                         value = pair.split(/=/)[1],
                         days, l, j, dt, month, day, timeString;
 
-                    if (key === 'NAME') {
-                        //name is not actually part of RRule, but we can handle it just the same
-                        params.schedulerName = value;
-                    }
-
                     if (key === 'FREQ') {
                         l = value.toLowerCase();
                         params.schedulerFrequency = _.find(angular_ui_scheduler_frequencyOptions, function (opt) {
