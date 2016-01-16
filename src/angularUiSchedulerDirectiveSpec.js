@@ -1,4 +1,4 @@
-describe('Directive: angular-ui-scheduler.angularUiScheduler', function () {
+xdescribe('Directive: angular-ui-scheduler.angularUiScheduler', function () {
     var ele, scope;
 
     beforeEach(module('angular-ui-scheduler'));
