@@ -133,44 +133,6 @@ angular.module('angular-ui-scheduler')
             this.useTimezone = angular_ui_scheduler_useTimezone;
             this.requireFutureStartTime = requireFutureST;
 
-            // Evaluate user intput and build options for passing to rrule
-            this.getOptions = function () {
-                var options = {};
-                options.startDate = this.scope.schedulerUTCTime;
-                options.frequency = this.scope.schedulerFrequency.value;
-                options.interval = this.scope.schedulerInterval;
-                if (this.scope.schedulerEnd.value === 'after') {
-                    options.occurrenceCount = this.scope.schedulerOccurrenceCount;
-                }
-                if (this.scope.schedulerEnd.value === 'on') {
-                    options.endDate = moment(scope.schedulerUTCTime).add(1, 'd').toDate();
-                }
-                if (this.scope.schedulerFrequency.value === 'weekly') {
-                    options.weekDays = this.scope.weekDays;
-                }
-                else if (this.scope.schedulerFrequency.value === 'yearly') {
-                    if (this.scope.yearlyRepeatOption === 'month') {
-                        options.month = this.scope.yearlyMonth.value;
-                        options.monthDay = this.scope.yearlyMonthDay;
-                    }
-                    else {
-                        options.setOccurrence = this.scope.yearlyOccurrence.value;
-                        options.weekDays = this.scope.yearlyWeekDay.value;
-                        options.month = this.scope.yearlyOtherMonth.value;
-                    }
-                }
-                else if (this.scope.schedulerFrequency.value === 'monthly') {
-                    if (this.scope.monthlyRepeatOption === 'day') {
-                        options.monthDay = this.scope.monthDay;
-                    }
-                    else {
-                        options.setOccurrence = this.scope.monthlyOccurrence.value;
-                        options.weekDays = this.scope.monthlyWeekDay.value;
-                    }
-                }
-                return options;
-            };
-
             // Clear custom field errors
             this.clearErrors = function () {
                 this.scope.scheduler_weekDays_error = false;
@@ -218,18 +180,17 @@ angular.module('angular-ui-scheduler')
 
             // Returns an rrule object
             this.getRRule = function () {
-                var options = this.getOptions();
-                return rRuleHelper.getRule(options);
+                return rRuleHelper.getRule(this.scope);
             };
 
             // Return object containing schedule name, string representation of rrule per iCalendar RFC,
             // and options used to create rrule
             this.getValue = function () {
                 var rule = this.getRRule(),
-                    options = this.getOptions();
+                    options = rRuleHelper.getOptions(this.scope);
                 return {
-                    name: scope.schedulerName,
-                    rrule: rule.toString(),
+                    name: this.scope.schedulerName,
+                    rrule: this.getRRule().toString(),
                     options: options
                 };
             };

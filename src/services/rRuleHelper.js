@@ -9,10 +9,54 @@
 angular.module('angular-ui-scheduler')
     .factory('rRuleHelper', function (angular_ui_scheduler_useTimezone, $log, $filter,
                                       angular_ui_scheduler_frequencyOptions,
-                                      angular_ui_scheduler_weekdays) {
+                                      angular_ui_scheduler_occurrences,
+                                      angular_ui_scheduler_endOptions,
+                                      angular_ui_scheduler_weekdays,
+                                      angular_ui_scheduler_months) {
         return {
+
+            // Evaluate user intput and build options for passing to rrule
+            getOptions: function (scope) {
+                var options = {};
+                options.startDate = scope.schedulerUTCTime;
+                options.frequency = scope.schedulerFrequency.value;
+                options.interval = scope.schedulerInterval;
+                if (scope.schedulerEnd.value === 'after') {
+                    options.occurrenceCount = scope.schedulerOccurrenceCount;
+                }
+                if (scope.schedulerEnd.value === 'on') {
+                    options.endDate = moment(scope.schedulerUTCTime).add(1, 'd').toDate();
+                }
+                if (scope.schedulerFrequency.value === 'weekly') {
+                    options.weekDays = scope.weekDays;
+                }
+                else if (scope.schedulerFrequency.value === 'yearly') {
+                    if (scope.yearlyRepeatOption === 'month') {
+                        options.month = scope.yearlyMonth.value;
+                        options.monthDay = scope.yearlyMonthDay;
+                    }
+                    else {
+                        options.setOccurrence = scope.yearlyOccurrence.value;
+                        options.weekDays = scope.yearlyWeekDay.value;
+                        options.month = scope.yearlyOtherMonth.value;
+                    }
+                }
+                else if (scope.schedulerFrequency.value === 'monthly') {
+                    if (scope.monthlyRepeatOption === 'day') {
+                        options.monthDay = scope.monthDay;
+                    }
+                    else {
+                        options.setOccurrence = scope.monthlyOccurrence.value;
+                        options.weekDays = scope.monthlyWeekDay.value;
+                    }
+                }
+                return options;
+            },
+
             //returns rrule based on current state of UI
-            getRule: function (params) {
+            getRule: function (scope) {
+
+                var params = this.getOptions(scope);
                 // Convert user inputs to an rrule. Returns rrule object using https://github.com/jkbr/rrule
                 // **list of 'valid values' found below in LoadLookupValues
 
@@ -94,7 +138,7 @@ angular.module('angular-ui-scheduler')
             },
 
             //configures UI based on rrule
-            setRule: function (rule) {
+            setRule: function (rule, params) {
                 if (!rule) {
                     throw 'No rule entered. Provide a valid RRule string.';
                 }
@@ -103,8 +147,6 @@ angular.module('angular-ui-scheduler')
                 if (!angular.isArray(tokens)) {
                     throw 'No rule entered. Provide a valid RRule string.';
                 }
-
-                var params = {};
 
                 // Search the tokens of RRule keys for a particular key, returning its value
                 function getValue(set, key) {
@@ -127,6 +169,17 @@ angular.module('angular-ui-scheduler')
                             return (diffA.length === 0 && diffB.length === 0);
                         });
                     return match;
+                }
+
+                function normalizeDate(value) {
+                    if (/\d{8}T\d{6}.*Z/.test(value)) {
+                        // date may come in without separators. add them so new Date constructor will work
+                        value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
+                            function (match, p1, p2, p3, p4, p5, p6) {
+                                return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
+                            });
+                    }
+                    return value;
                 }
 
                 function setValue(pair, set) {
@@ -198,40 +251,13 @@ angular.module('angular-ui-scheduler')
                     }
                     if (key === 'DTSTART') {
                         // The form has been reset to the local zone
-
-                        if (/\d{8}T\d{6}.*Z/.test(value)) {
-                            // date may come in without separators. add them so new Date constructor will work
-                            value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
-                                function (match, p1, p2, p3, p4, p5, p6) {
-                                    return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
-                                });
-                        }
-                        if (angular_ui_scheduler_useTimezone) {
-                            dt = new Date(value); // date adjusted to local zone automatically
-                            month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
-                            day = $filter('schZeroPad')(dt.getDate(), 2);
-                            params.schedulerStartDt = month + '/' + day + '/' + dt.getFullYear();
-                            params.schedulerStartHour = $filter('schZeroPad')(dt.getHours(), 2);
-                            params.schedulerStartMinute = $filter('schZeroPad')(dt.getMinutes(), 2);
-                            params.schedulerStartSecond = $filter('schZeroPad')(dt.getSeconds(), 2);
-                            params.scheduleTimeChange();  // calc UTC
-                        }
-                        else {
-                            // expects inbound dates to be in ISO format: 2014-04-02T00:00:00.000Z
-                            params.schedulerStartDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
-                                return p2 + '/' + p3 + '/' + p1;
-                            });
-                            timeString = value.replace(/^.*T/, '');
-                            params.schedulerStartHour = $filter('schZeroPad')(timeString.substr(0, 2), 2);
-                            params.schedulerStartMinute = $filter('schZeroPad')(timeString.substr(3, 2), 2);
-                            params.schedulerStartSecond = $filter('schZeroPad')(timeString.substr(6, 2), 2);
-                        }
-                        params.scheduleTimeChange();
+                        value = normalizeDate(value);
+                        params.schedulerStartDt = new Date(value);
                     }
                     if (key === 'BYSETPOS') {
                         if (getValue(set, 'FREQ') === 'YEARLY') {
                             params.yearlRepeatOption = 'other';
-                            params.yearlyOccurrence = _.find(params.occurrences, function (x) {
+                            params.yearlyOccurrence = _.find(angular_ui_scheduler_occurrences, function (x) {
                                 return (x.value === parseInt(value, 10));
                             });
                             if (!params.yearlyOccurrence || !params.yearlyOccurrence.name) {
@@ -239,7 +265,7 @@ angular.module('angular-ui-scheduler')
                             }
                         }
                         else {
-                            params.monthlyOccurrence = _.find(params.occurrences, function (x) {
+                            params.monthlyOccurrence = _.find(angular_ui_scheduler_occurrences, function (x) {
                                 return (x.value === parseInt(value, 10));
                             });
                             if (!params.monthlyOccurrence || !params.monthlyOccurrence.name) {
@@ -250,7 +276,7 @@ angular.module('angular-ui-scheduler')
 
                     if (key === 'COUNT') {
                         if (parseInt(value, 10)) {
-                            params.schedulerEnd = params.endOptions[1];
+                            params.schedulerEnd = angular_ui_scheduler_endOptions[1];
                             params.schedulerOccurrenceCount = parseInt(value, 10);
                         }
                         else {
@@ -259,31 +285,15 @@ angular.module('angular-ui-scheduler')
                     }
 
                     if (key === 'UNTIL') {
-                        if (/\d{8}T\d{6}.*Z/.test(value)) {
-                            // date may come in without separators. add them so new Date constructor will work
-                            value = value.replace(/(\d{4})(\d{2})(\d{2}T)(\d{2})(\d{2})(\d{2}.*$)/,
-                                function (match, p1, p2, p3, p4, p5, p6) {
-                                    return p1 + '-' + p2 + '-' + p3 + p4 + ':' + p5 + ':' + p6.substr(0, 2) + 'Z';
-                                });
-                        }
-                        params.schedulerEnd = params.endOptions[2];
-                        if (angular_ui_scheduler_useTimezone) {
-                            dt = new Date(value); // date adjusted to local zone automatically
-                            month = $filter('schZeroPad')(dt.getMonth() + 1, 2);
-                            day = $filter('schZeroPad')(dt.getDate(), 2);
-                            params.schedulerEndDt = month + '/' + day + '/' + dt.getFullYear();
-                        }
-                        else {
-                            params.schedulerEndDt = value.replace(/T.*$/, '').replace(/(\d{4})-(\d{2})-(\d{2})/, function (match, p1, p2, p3) {
-                                return p2 + '/' + p3 + '/' + p1;
-                            });
-                        }
+                        value = normalizeDate(value);
+                        params.schedulerEnd = angular_ui_scheduler_endOptions[2];
+                        params.schedulerEndDt = new Date(value);
                     }
 
                     if (key === 'BYMONTH') {
                         if (getValue(set, 'FREQ') === 'YEARLY' && getValue(set, 'BYDAY')) {
                             params.yearlRepeatOption = 'other';
-                            params.yearlyOtherMonth = _.find(params.months, function (x) {
+                            params.yearlyOtherMonth = _.find(angular_ui_scheduler_months, function (x) {
                                 return x.value === parseInt(value, 10);
                             });
                             if (!params.yearlyOtherMonth || !params.yearlyOtherMonth.name) {
@@ -292,7 +302,7 @@ angular.module('angular-ui-scheduler')
                         }
                         else {
                             params.yearlyOption = 'month';
-                            params.yearlyMonth = _.find(params.months, function (x) {
+                            params.yearlyMonth = _.find(angular_ui_scheduler_months, function (x) {
                                 return x.value === parseInt(value, 10);
                             });
                             if (!params.yearlyMonth || !params.yearlyMonth.name) {

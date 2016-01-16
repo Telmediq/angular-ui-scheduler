@@ -135,12 +135,11 @@
                     <form class="form" role="form">
                         <div class="form-group">
                             <label>RRule</label>
-                            <input type="text" ng-model="inputRRule" class="form-control" ng-keypress="inputRRuleMsg='';" placeholder="RRule key=value pairs">
-                            <div class="error" ng-bind="inputRRuleMsg" style="height: 20px;"></div>
+                            <input type="text" ng-model="inputRRule" class="form-control" placeholder="RRule key=value pairs">
                         </div>
                     </form>
                     <div class="button-group">
-                        <button type="button" class="btn btn-primary btn-sm" id="show-me-button" ng-click="setRRule()">Show Me</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="show-me-button" ng-click="scheduler.setRRule(inputRRule)">Show Me</button>
                     </div>
                 </div>
             </div>
