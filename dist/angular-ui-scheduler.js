@@ -195,6 +195,10 @@ angular.module('angular-ui-scheduler')
             $scope.scheduleRepeatChange();
         };
 
+        $scope.setStartDate = function (startDate) {
+            $scope.uiState.schedulerStartDt = startDate;
+        };
+
         // Clear the form, returning all elements to a default state
         $scope.clear = function () {
             $scope.clearErrors();
@@ -300,7 +304,8 @@ angular.module('angular-ui-scheduler')
             templateUrl: 'angular-ui-scheduler/src/angularUiScheduler.html',
             scope: {
                 rrule: '@',
-                hideStart: '='
+                hideStart: '=',
+                startDate: '='
             },
             controller: 'angularUiSchedulerCtrl',
             link: function (scope, iElement, iAttrs, ngModelCtrl) {
@@ -336,6 +341,7 @@ angular.module('angular-ui-scheduler')
                     if (newVal) {
                         $log.debug('setting rrule', newVal);
                         scope.setRRule(newVal);
+                        scope.setStartDate(scope.startDate);
                     }
                 });
             }

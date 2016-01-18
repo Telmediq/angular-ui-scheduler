@@ -192,6 +192,10 @@ angular.module('angular-ui-scheduler')
             $scope.scheduleRepeatChange();
         };
 
+        $scope.setStartDate = function (startDate) {
+            $scope.uiState.schedulerStartDt = startDate;
+        };
+
         // Clear the form, returning all elements to a default state
         $scope.clear = function () {
             $scope.clearErrors();
