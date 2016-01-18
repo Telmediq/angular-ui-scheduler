@@ -5,7 +5,6 @@ module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("angular-ui-scheduler/src/angularUiScheduler.html",
     "<div class=\"row angular-ui-scheduler\">\n" +
-    "    <pre>{{role | json}}</pre>\n" +
     "    <div class=\"col-md-12\">\n" +
     "\n" +
     "        <form class=\"form\" role=\"form\" name=\"scheduler_form\" novalidate>\n" +
@@ -14,7 +13,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
-    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" id=\"schedulerStartDt\" ng-model=\"schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
+    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" ng-model=\"uiState.schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
     "                               ng-change=\"scheduleTimeChange()\">\n" +
     "\n" +
     "                    </div>\n" +
@@ -58,7 +57,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-4\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label>Repeat frequency</label>\n" +
-    "                        <select name=\"schedulerFrequency\" id=\"schedulerFrequency\" ng-model=\"schedulerFrequency\"\n" +
+    "                        <select name=\"schedulerFrequency\" ng-model=\"uiState.schedulerFrequency\"\n" +
     "                                ng-options=\"f.name for f in frequencyOptions\" required class=\"form-control \"\n" +
     "                                ng-change=\"scheduleRepeatChange()\"></select>\n" +
     "                    </div>\n" +
@@ -68,8 +67,8 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
     "                        <label>Every</label>\n" +
     "                        <div class=\"input-group\">\n" +
-    "                            <input name=\"schedulerInterval\" id=\"schedulerInterval\" type=\"number\" class=\"form-control\"\n" +
-    "                                   ng-model=\"schedulerInterval\" min=\"1\" max=\"999\" ng-change=\"resetError('scheduler_interval_error')\">\n" +
+    "                            <input name=\"schedulerInterval\" type=\"number\" class=\"form-control\"\n" +
+    "                                   ng-model=\"uiState.schedulerInterval\" min=\"1\" max=\"999\" ng-change=\"resetError('scheduler_interval_error')\">\n" +
     "                            <span class=\"input-group-addon\" ng-bind=\"schedulerIntervalLabel\"></span>\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_interval_error\">Provide a value between 1 and 999</div>\n" +
@@ -77,82 +76,82 @@ module.run(["$templateCache", function($templateCache) {
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row\" ng-show=\"schedulerFrequency && schedulerFrequency.value == 'monthly'\">\n" +
+    "            <div class=\"row\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'monthly'\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on day</label>\n" +
+    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"uiState.monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on day</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
-    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"monthlyRepeatOption != 'day'\"\n" +
-    "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
+    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"uiState.monthlyRepeatOption != 'day'\"\n" +
+    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row option-pad-bottom\" ng-show=\"schedulerFrequency && schedulerFrequency.value == 'monthly'\">\n" +
+    "            <div class=\"row option-pad-bottom\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'monthly'\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on\n" +
     "                                the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\">\n" +
-    "                            <select name=\"monthlyOccurrence\" id=\"monthlyOccurrence\" ng-model=\"monthlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +
-    "                                    ng-disabled=\"monthlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"monthlyOccurrence\" ng-model=\"uiState.monthlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +
+    "                                    ng-disabled=\"uiState.monthlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\">\n" +
-    "                            <select name=\"monthlyWeekDay\" id=\"monthlyWeekDay\" ng-model=\"monthlyWeekDay\" ng-options=\"w.name for w in weekdays\"\n" +
-    "                                    ng-disabled=\"monthlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"monthlyWeekDay\" ng-model=\"uiState.monthlyWeekDay\" ng-options=\"w.name for w in weekdays\"\n" +
+    "                                    ng-disabled=\"uiState.monthlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row\" ng-show=\"schedulerFrequency && schedulerFrequency.value == 'yearly'\">\n" +
+    "            <div class=\"row\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on</label>\n" +
+    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"uiState.yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
-    "                            <select name=\"yearlyMonth\" id=\"yearlyMonth\" ng-model=\"yearlyMonth\" ng-options=\"m.name for m in months\"\n" +
-    "                                    ng-disabled=\"yearlyRepeatOption != 'month'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"yearlyMonth\" ng-model=\"uiState.yearlyMonth\" ng-options=\"m.name for m in months\"\n" +
+    "                                    ng-disabled=\"uiState.yearlyRepeatOption != 'month'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
-    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"yearlyRepeatOption != 'month'\"\n" +
-    "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
+    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"uiState.yearlyRepeatOption != 'month'\"\n" +
+    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row option-pad-bottom\" ng-show=\"schedulerFrequency && schedulerFrequency.value == 'yearly'\">\n" +
+    "            <div class=\"row option-pad-bottom\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on the</label>\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-2 padding-top-slim\">\n" +
-    "                            <select name=\"yearlyOccurrence\" id=\"yearlyOccurrence\" ng-model=\"yearlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +
-    "                                    ng-disabled=\"yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"yearlyOccurrence\" ng-model=\"uiState.yearlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +
+    "                                    ng-disabled=\"uiState.yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-2 padding-top-slim\">\n" +
-    "                            <select name=\"yearlyWeekDay\" id=\"yearlyWeekDay\" ng-model=\"yearlyWeekDay\" ng-options=\"w.name for w in weekdays\"\n" +
-    "                                    ng-disabled=\"yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"yearlyWeekDay\" ng-model=\"uiState.yearlyWeekDay\" ng-options=\"w.name for w in weekdays\"\n" +
+    "                                    ng-disabled=\"uiState.yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-2 padding-top-slim\">\n" +
-    "                            <select name=\"yearlyOtherMonth\" id=\"yearlyOtherMonth\" ng-model=\"yearlyOtherMonth\" ng-options=\"m.name for m in months\"\n" +
-    "                                    ng-disabled=\"yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
+    "                            <select name=\"yearlyOtherMonth\" ng-model=\"uiState.yearlyOtherMonth\" ng-options=\"m.name for m in months\"\n" +
+    "                                    ng-disabled=\"uiState.yearlyRepeatOption != 'other'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"form-group option-pad-left option-pad-bottom\" ng-show=\"schedulerFrequency && schedulerFrequency.value == 'weekly'\">\n" +
+    "            <div class=\"form-group option-pad-left option-pad-bottom\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'weekly'\">\n" +
     "                <label><span class=\"red-text\">*</span> On Days</label>\n" +
     "                <div class=\"input-group\">\n" +
     "                    <div class=\"btn-group\" data-toggle=\"buttons-checkbox\" id=\"weekdaySelect\">\n" +
@@ -173,22 +172,22 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
     "                        <label>End</label>\n" +
     "                        <div>\n" +
-    "                            <select id=\"schedulerEnd\" name=\"schedulerEnd\" ng-model=\"schedulerEnd\" ng-options=\"e.name for e in endOptions\" required class=\"form-control \"\n" +
+    "                            <select name=\"schedulerEnd\" ng-model=\"uiState.schedulerEnd\" ng-options=\"e.name for e in endOptions\" required class=\"form-control \"\n" +
     "                                    ng-change=\"schedulerEndChange()\"></select>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\" ng-show=\"schedulerEnd && schedulerEnd.value == 'after'\">\n" +
+    "                <div class=\"col-md-4\" ng-show=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'after'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "                        <div class=\"input-group\">\n" +
-    "                            <input type=\"number\" ng-name=\"schedulerOccurrenceCount\" ng-id=\"schedulerOccurrenceCount\" class=\"form-control\"\n" +
-    "                                   ng-model=\"schedulerOccurrenceCount\" min=\"1\" max=\"999\" on-change=\"resetError('scheduler_occurrenceCount_error')\">\n" +
+    "                            <input type=\"number\" name=\"schedulerOccurrenceCount\" class=\"form-control\"\n" +
+    "                                   ng-model=\"uiState.schedulerOccurrenceCount\" min=\"1\" max=\"999\" on-change=\"resetError('scheduler_occurrenceCount_error')\">\n" +
     "                            <span class=\"input-group-addon\">Occurrence(s)</span>\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_occurrenceCount_error\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\" ng-show=\"schedulerEnd && schedulerEnd.value == 'on'\">\n" +
+    "                <div class=\"col-md-4\" ng-show=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'on'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "\n" +
     "                        <input type=\"date\" name=\"schedulerEndDt\" id=\"schedulerEndDt\" class=\"form-control \" ng-model=\"schedulerEndDt\" data-min-today=\"true\" ng-change=\"resetError('scheduler_endDt_error')\">\n" +

@@ -34,23 +34,23 @@ angular.module('angular-ui-scheduler')
         //region this should be moved to time edit directive
         $scope.schedulerStartHour = function (value) {
             if (arguments.length) {
-                $scope.schedulerStartDt = moment($scope.schedulerStartDt).hours(value).toDate();
+                $scope.uiState.schedulerStartDt = moment($scope.uiState.schedulerStartDt).hours(value).toDate();
             } else {
                 return $scope.schedulerStartDt.getHours();
             }
         };
         $scope.schedulerStartMinute = function (value) {
             if (arguments.length) {
-                $scope.schedulerStartDt = moment($scope.schedulerStartDt).minutes(value).toDate();
+                $scope.uiState.schedulerStartDt = moment($scope.uiState.schedulerStartDt).minutes(value).toDate();
             } else {
-                return $scope.schedulerStartDt.getMinutes();
+                return $scope.uiState.schedulerStartDt.getMinutes();
             }
         };
         $scope.schedulerStartSecond = function (value) {
             if (arguments.length) {
-                $scope.schedulerStartDt = moment($scope.schedulerStartDt).seconds(value).toDate();
+                $scope.uiState.schedulerStartDt = moment($scope.uiState.schedulerStartDt).seconds(value).toDate();
             } else {
-                return $scope.schedulerStartDt.getSeconds();
+                return $scope.uiState.schedulerStartDt.getSeconds();
             }
         };
         //endregion
@@ -78,14 +78,14 @@ angular.module('angular-ui-scheduler')
         };
 
         $scope.scheduleRepeatChange = function () {
-            if ($scope.schedulerFrequency && $scope.schedulerFrequency.value !== '' && $scope.schedulerFrequency.value !== 'none') {
-                $scope.schedulerInterval = 1;
+            if ($scope.uiState.schedulerFrequency && $scope.uiState.schedulerFrequency.value !== '' && $scope.uiState.schedulerFrequency.value !== 'none') {
+                $scope.uiState.schedulerInterval = 1;
                 $scope.schedulerShowInterval = true;
-                $scope.schedulerIntervalLabel = $scope.schedulerFrequency.intervalLabel;
+                $scope.schedulerIntervalLabel = $scope.uiState.schedulerFrequency.intervalLabel;
             }
             else {
                 $scope.schedulerShowInterval = false;
-                $scope.schedulerEnd = $scope.endOptions[0];
+                $scope.uiState.schedulerEnd = $scope.endOptions[0];
             }
             $scope.sheduler_frequency_error = false;
         };
@@ -96,12 +96,12 @@ angular.module('angular-ui-scheduler')
 
         $scope.setWeekday = function (event, day) {
             // Add or remove day when user clicks checkbox button
-            var i = $scope.weekDays.indexOf(day);
+            var i = $scope.uiState.weekDays.indexOf(day);
             if (i >= 0) {
-                $scope.weekDays.splice(i, 1);
+                $scope.uiState.weekDays.splice(i, 1);
             }
             else {
-                $scope.weekDays.push(day);
+                $scope.uiState.weekDays.push(day);
             }
             $(event.target).blur();
             $scope.scheduler_weekDays_error = false;
@@ -116,7 +116,7 @@ angular.module('angular-ui-scheduler')
         };
 
         $scope.schedulerEndChange = function () {
-            $scope.schedulerOccurrenceCount = 1;
+            $scope.uiState.schedulerOccurrenceCount = 1;
         };
 
         // Clear custom field errors
@@ -172,13 +172,13 @@ angular.module('angular-ui-scheduler')
 
         // Returns an rrule object
         $scope.getRRule = function () {
-            return rRuleHelper.getRule($scope);
+            return rRuleHelper.getRule($scope.uiState);
         };
 
         // Return object containing schedule name, string representation of rrule per iCalendar RFC and options used to create rrule
         $scope.getValue = function () {
             var rule = $scope.getRRule(),
-                options = rRuleHelper.getOptions($scope);
+                options = rRuleHelper.getOptions($scope.uiState);
             return {
                 rrule: $scope.getRRule().toString(),
                 options: options
@@ -187,7 +187,7 @@ angular.module('angular-ui-scheduler')
 
         $scope.setRRule = function (rule) {
             $scope.clear();
-            return rRuleHelper.setRule(rule, $scope);
+            return rRuleHelper.setRule(rule, $scope.uiState);
         };
 
         // Clear the form, returning all elements to a default state
@@ -197,22 +197,24 @@ angular.module('angular-ui-scheduler')
         };
 
         function init() {
-            $scope.weekDays = [];
-            $scope.schedulerStartDt = new Date();
-            $scope.schedulerFrequency = $scope.frequencyOptions[0];
-            $scope.schedulerShowEvery = false;
-            $scope.schedulerEnd = $scope.endOptions[0];
-            $scope.schedulerInterval = 1;
-            $scope.schedulerOccurrenceCount = 1;
-            $scope.monthlyRepeatOption = 'day';
-            $scope.monthDay = 1;
-            $scope.monthlyOccurrence = $scope.occurrences[0];
-            $scope.monthlyWeekDay = $scope.weekdays[0];
-            $scope.yearlyRepeatOption = 'month';
-            $scope.yearlyMonth = $scope.months[0];
-            $scope.yearlyWeekDay = $scope.weekdays[0];
-            $scope.yearlyOtherMonth = $scope.months[0];
-            $scope.yearlyOccurrence = $scope.occurrences[0];
+            $scope.uiState = {
+                weekDays: [],
+                schedulerStartDt: new Date(),
+                schedulerFrequency: $scope.frequencyOptions[0],
+                schedulerEnd: $scope.endOptions[0],
+                schedulerInterval: 1,
+                schedulerOccurrenceCount: 1,
+                monthlyRepeatOption: 'day',
+                monthDay: 1,
+                monthlyOccurrence: $scope.occurrences[0],
+                monthlyWeekDay: $scope.weekdays[0],
+                yearlyRepeatOption: 'month',
+                yearlyMonth: $scope.months[0],
+                yearlyWeekDay: $scope.weekdays[0],
+                yearlyOtherMonth: $scope.months[0],
+                yearlyOccurrence: $scope.occurrences[0]
+                //schedulerEndDt: undefined
+            };
 
             if (angular_ui_scheduler_useTimezone) {
                 $scope.timeZones = moment.tz.names();
@@ -221,5 +223,10 @@ angular.module('angular-ui-scheduler')
         }
 
         init();
+
+        //update role
+        $scope.$watch('uiState', function (state) {
+            $scope.rule = $scope.getValue();
+        }, true);
 
     });

@@ -1,6 +1,6 @@
 {
   "name": "angular-ui-scheduler",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "devDependencies": {
     "event-stream": "3.3.2",
     "gulp": "3.9.0",
@@ -45,8 +45,8 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "prestart" : "npm prune && npm install",
-    "postinstall" : "bower prune && bower install && gulp build",
+    "prestart": "npm prune && npm install",
+    "postinstall": "bower prune && bower install && gulp build",
     "start": "live-server --open=demo"
   }
 }
