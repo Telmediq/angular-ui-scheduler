@@ -261,8 +261,10 @@ gulp.task('bump-patch-version', function () {
 });
 
 gulp.task('commit-changes', function () {
+    var version = getPackageJsonVersion();
     return gulp.src('.')
-        .pipe(git.commit('Bumped version number'));
+        .pipe(git.add())
+        .pipe(git.commit('Releasing new version ' + version));
 });
 
 gulp.task('push-changes', function (cb) {
@@ -277,12 +279,12 @@ gulp.task('create-new-tag', function (cb) {
         }
         git.push('origin', 'master', {args: '--tags'}, cb);
     });
-
-    function getPackageJsonVersion() {
-        //We parse the json file instead of using require because require caches multiple calls so the version number won't be updated
-        return JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
-    }
 });
+
+function getPackageJsonVersion() {
+    //We parse the json file instead of using require because require caches multiple calls so the version number won't be updated
+    return JSON.parse(fs.readFileSync('./package.json', 'utf8')).version;
+}
 
 gulp.task('release', function (callback) {
     runSequence(
