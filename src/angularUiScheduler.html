@@ -1,4 +1,5 @@
 <div class="row angular-ui-scheduler">
+    <pre>{{role | json}}</pre>
     <div class="col-md-12">
 
         <form class="form" role="form" name="scheduler_form" novalidate>
@@ -7,7 +8,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
                         <label><span class="red-text">*</span> Start Date <span class="fmt-help"> mm/dd/yyyy</span></label>
-                        <input type="date" class="form-control" name="schedulerUTCTime" id="schedulerUTCTime" ng-model="schedulerUTCTime" placeholder="mm/dd/yyyy" required
+                        <input type="date" class="form-control" name="schedulerStartDt" id="schedulerStartDt" ng-model="schedulerStartDt" placeholder="mm/dd/yyyy" required
                                ng-change="scheduleTimeChange()">
 
                     </div>
@@ -77,7 +78,7 @@
                             <label><input type="radio" value="day" ng-model="monthlyRepeatOption" ng-change="monthlyRepeatChange()" name="monthlyRepeatOption"> on day</label>
                         </div>
                         <div class="col-md-3" style="padding-top:5px">
-                            <input name="monthDay" id="monthDay" type="number" class="form-control" ng-disabled="monthlyRepeatOption != 'day'"
+                            <input name="monthDay" type="number" class="form-control" ng-disabled="monthlyRepeatOption != 'day'"
                                    ng-model="monthDay" min="1" max="31" ng-change="resetError('scheduler_monthDay_error')">
                             <div class="error" ng-show="scheduler_monthDay_error">Must be between 1 and 31</div>
                         </div>
@@ -115,9 +116,9 @@
                                     ng-disabled="yearlyRepeatOption != 'month'" class="form-control "></select>
                         </div>
                         <div class="col-md-3 padding-top-slim">
-                            <input name="yearlyMonthDay" id="yearlyMonthDay" type="number" class="form-control" ng-disabled="yearlyRepeatOption != 'month'"
-                                   ng-model="yearlyMonthDay" min="1" max="31" ng-change="resetError('scheduler_yearlyMonthDay_error')">
-                            <div class="error" ng-show="scheduler_yearlyMonthDay_error">Must be between 1 and 31</div>
+                            <input name="monthDay" type="number" class="form-control" ng-disabled="yearlyRepeatOption != 'month'"
+                                   ng-model="monthDay" min="1" max="31" ng-change="resetError('scheduler_monthDay_error')">
+                            <div class="error" ng-show="scheduler_monthDay_error">Must be between 1 and 31</div>
                         </div>
                     </div>
                 </div>

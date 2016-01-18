@@ -5,6 +5,7 @@ module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("angular-ui-scheduler/src/angularUiScheduler.html",
     "<div class=\"row angular-ui-scheduler\">\n" +
+    "    <pre>{{role | json}}</pre>\n" +
     "    <div class=\"col-md-12\">\n" +
     "\n" +
     "        <form class=\"form\" role=\"form\" name=\"scheduler_form\" novalidate>\n" +
@@ -13,7 +14,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
-    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerUTCTime\" id=\"schedulerUTCTime\" ng-model=\"schedulerUTCTime\" placeholder=\"mm/dd/yyyy\" required\n" +
+    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" id=\"schedulerStartDt\" ng-model=\"schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
     "                               ng-change=\"scheduleTimeChange()\">\n" +
     "\n" +
     "                    </div>\n" +
@@ -83,7 +84,7 @@ module.run(["$templateCache", function($templateCache) {
     "                            <label><input type=\"radio\" value=\"day\" ng-model=\"monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on day</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
-    "                            <input name=\"monthDay\" id=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"monthlyRepeatOption != 'day'\"\n" +
+    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"monthlyRepeatOption != 'day'\"\n" +
     "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
     "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
@@ -121,9 +122,9 @@ module.run(["$templateCache", function($templateCache) {
     "                                    ng-disabled=\"yearlyRepeatOption != 'month'\" class=\"form-control \"></select>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
-    "                            <input name=\"yearlyMonthDay\" id=\"yearlyMonthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"yearlyRepeatOption != 'month'\"\n" +
-    "                                   ng-model=\"yearlyMonthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_yearlyMonthDay_error')\">\n" +
-    "                            <div class=\"error\" ng-show=\"scheduler_yearlyMonthDay_error\">Must be between 1 and 31</div>\n" +
+    "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"yearlyRepeatOption != 'month'\"\n" +
+    "                                   ng-model=\"monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
+    "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +

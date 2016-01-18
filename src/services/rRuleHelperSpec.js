@@ -62,7 +62,7 @@ describe('Service: angular-ui-scheduler.rRuleHelper', function () {
             schedulerInterval: 5,
             yearlyRepeatOption: 'month',
             yearlyMonth: {name: 'April', value: 4},
-            yearlyMonthDay: 1,
+            monthDay: 1,
             schedulerEnd: {name: 'Never', value: 'never'},
             rrule: "FREQ=YEARLY;DTSTART=20140319T000000Z;INTERVAL=5;BYMONTH=4;BYMONTHDAY=1"
         },
