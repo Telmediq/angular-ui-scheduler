@@ -18,6 +18,7 @@ angular.module('angular-ui-scheduler')
                                                     angular_ui_scheduler_occurrences,
                                                     angular_ui_scheduler_weekdays,
                                                     angular_ui_scheduler_months) {
+
         //region lookup fields
 
         $scope.schedulerShowTimeZone = angular_ui_scheduler_useTimezone;
@@ -190,7 +191,8 @@ angular.module('angular-ui-scheduler')
 
         $scope.setRRule = function (rule) {
             $scope.clear();
-            return rRuleHelper.setRule(rule, $scope.uiState);
+            rRuleHelper.setRule(rule, $scope.uiState);
+            $scope.scheduleRepeatChange();
         };
 
         // Clear the form, returning all elements to a default state
@@ -332,7 +334,7 @@ angular.module('angular-ui-scheduler')
 
                 scope.$watch('rrule', function (newVal) {
                     if (newVal) {
-                        $log.debug(newVal);
+                        $log.debug('setting rrule', newVal);
                         scope.setRRule(newVal);
                     }
                 });

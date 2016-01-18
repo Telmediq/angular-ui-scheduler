@@ -96,7 +96,7 @@ angular.module('angular-ui-scheduler')
 
                 scope.$watch('rrule', function (newVal) {
                     if (newVal) {
-                        $log.debug(newVal);
+                        $log.debug('setting rrule', newVal);
                         scope.setRRule(newVal);
                     }
                 });
