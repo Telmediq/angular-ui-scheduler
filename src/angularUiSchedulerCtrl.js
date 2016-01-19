@@ -37,7 +37,7 @@ angular.module('angular-ui-scheduler')
             if (arguments.length) {
                 $scope.uiState.schedulerStartDt = moment($scope.uiState.schedulerStartDt).hours(value).toDate();
             } else {
-                return $scope.schedulerStartDt.getHours();
+                return $scope.uiState.schedulerStartDt.getHours();
             }
         };
         $scope.schedulerStartMinute = function (value) {
