@@ -22,14 +22,9 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Time <span class=\"fmt-help\">HH24:MM:SS</span><span class=\"fmt-help\" ng-show=\"!schedulerShowTimeZone\">UTC</span></label>\n" +
     "                        <div class=\"form-inline\">\n" +
-    "                            <input name=\"schedulerStartHour\" id=\"schedulerStartHour\" type=\"number\" class=\"form-control\"\n" +
-    "                                   ng-model=\"schedulerStartHour\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"23\" required\n" +
-    "                                   ng-change=\"scheduleTimeChange()\">\n" +
-    "\n" +
-    "                            <span>:</span><input name=\"schedulerStartMinute\" id=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required\n" +
-    "                                                 ng-change=\"scheduleTimeChange()\">\n" +
-    "                            <span>:</span><input name=\"schedulerStartSecond\" id=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\" ng-model-options=\"{ getterSetter: true }\"\n" +
-    "                                                 min=\"0\" max=\"59\" required ng-change=\"scheduleTimeChange()\">\n" +
+    "                            <input name=\"schedulerStartHour\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartHour\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"23\" required>\n" +
+    "                            <span>:</span><input name=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required>\n" +
+    "                            <span>:</span><input name=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required>\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_startTime_error\">Time must be in HH24:MM:SS format</div>\n" +
     "                    </div>\n" +
