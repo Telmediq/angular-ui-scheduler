@@ -344,6 +344,13 @@ angular.module('angular-ui-scheduler')
                         scope.setStartDate(scope.startDate);
                     }
                 });
+
+                scope.$watch('startDate', function (newVal) {
+                    if (newVal && !scope.rrule) {
+                        $log.debug('setting startDate', newVal);
+                        scope.setStartDate(scope.startDate);
+                    }
+                });
             }
         };
     }]);
