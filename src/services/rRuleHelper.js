@@ -25,7 +25,7 @@ angular.module('angular-ui-scheduler')
                     options.occurrenceCount = scope.schedulerOccurrenceCount;
                 }
                 if (scope.schedulerEnd.value === 'on') {
-                    options.endDate = moment(scope.schedulerStartDt).add(1, 'd').toDate();
+                    options.endDate = scope.schedulerEndDt;
                 }
                 if (scope.schedulerFrequency.value === 'weekly') {
                     options.weekDays = scope.weekDays;
@@ -209,7 +209,6 @@ angular.module('angular-ui-scheduler')
                                 for (var j = 0; j < days.length; j++) {
                                     if (_.contains(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
                                         params.weekDays.push(days[j].toLowerCase());
-                                        params['weekDay' + days[j].toUpperCase() + 'Class'] = 'active'; //activate related button
                                     }
                                     else {
                                         throw 'BYDAY contains unrecognized day value(s)';

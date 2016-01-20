@@ -7,8 +7,7 @@
                 <div class="col-md-5">
                     <div class="form-group">
                         <label><span class="red-text">*</span> Start Date <span class="fmt-help"> mm/dd/yyyy</span></label>
-                        <input type="date" class="form-control" name="schedulerStartDt" ng-model="uiState.schedulerStartDt" placeholder="mm/dd/yyyy" required
-                               ng-change="scheduleTimeChange()">
+                        <input type="date" class="form-control" name="schedulerStartDt" ng-model="uiState.schedulerStartDt" placeholder="mm/dd/yyyy" required>
 
                     </div>
                 </div>
@@ -20,14 +19,8 @@
                             <span>:</span><input name="schedulerStartMinute" type="number" class="form-control" ng-model="schedulerStartMinute" ng-model-options="{ getterSetter: true }" min="0" max="59" required>
                             <span>:</span><input name="schedulerStartSecond" type="number" class="form-control" ng-model="schedulerStartSecond" ng-model-options="{ getterSetter: true }" min="0" max="59" required>
                         </div>
-                        <div class="error" ng-show="scheduler_startTime_error">Time must be in HH24:MM:SS format</div>
+                        <div class="error" ng-show="scheduler_form.schedulerStartHour.$invalid || scheduler_form.schedulerStartMinute.$invalid ||scheduler_form.schedulerStartSecond.$invalid ">Time must be in HH24:MM:SS format</div>
                     </div>
-                </div>
-            </div>
-
-            <div class="row error-pull-up" ng-if="!hideStart">
-                <div class="col-md-12">
-                    <div class="error" ng-show="scheduler_form_schedulerStartDt_error" ng-bind="scheduler_form_schedulerStartDt_error"></div>
                 </div>
             </div>
 
@@ -35,8 +28,8 @@
                 <div class="col-md-4" ng-show="schedulerShowTimeZone">
                     <div class="form-group">
                         <label>Local Time Zone</label>
-                        <select name="schedulerTimeZone" id="schedulerTimeZone" ng-model="schedulerTimeZone" ng-options="z.name for z in timeZones"
-                                required class="form-control " ng-change="scheduleTimeChange()"></select>
+                        <select name="schedulerTimeZone" ng-model="schedulerTimeZone" ng-options="z.name for z in timeZones"
+                                required class="form-control "></select>
                     </div>
                 </div>
 
@@ -47,20 +40,21 @@
                     <div class="form-group">
                         <label>Repeat frequency</label>
                         <select name="schedulerFrequency" ng-model="uiState.schedulerFrequency"
-                                ng-options="f.name for f in frequencyOptions" required class="form-control "
-                                ng-change="scheduleRepeatChange()"></select>
+                                ng-options="f.name for f in frequencyOptions" required class="form-control">
+
+                        </select>
                     </div>
-                    <div class="error" ng-show="sheduler_frequency_error"></div>
+                    <div class="error" ng-show="scheduler_form.schedulerFrequency.$invalid"></div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group" ng-show="schedulerShowInterval">
                         <label>Every</label>
                         <div class="input-group">
                             <input name="schedulerInterval" type="number" class="form-control"
-                                   ng-model="uiState.schedulerInterval" min="1" max="999" ng-change="resetError('scheduler_interval_error')">
+                                   ng-model="uiState.schedulerInterval" min="1" max="999">
                             <span class="input-group-addon" ng-bind="schedulerIntervalLabel"></span>
                         </div>
-                        <div class="error" ng-show="scheduler_interval_error">Provide a value between 1 and 999</div>
+                        <div class="error" ng-show="scheduler_form.schedulerInterval.$invalid">Provide a value between 1 and 999</div>
                     </div>
                 </div>
             </div>
@@ -73,8 +67,8 @@
                         </div>
                         <div class="col-md-3" style="padding-top:5px">
                             <input name="monthDay" type="number" class="form-control" ng-disabled="uiState.monthlyRepeatOption != 'day'"
-                                   ng-model="uiState.monthDay" min="1" max="31" ng-change="resetError('scheduler_monthDay_error')">
-                            <div class="error" ng-show="scheduler_monthDay_error">Must be between 1 and 31</div>
+                                   ng-model="uiState.monthDay" min="1" max="31">
+                            <div class="error" ng-show="scheduler_form.monthDay.$invalid">Must be between 1 and 31</div>
                         </div>
                     </div>
                 </div>
@@ -111,14 +105,14 @@
                         </div>
                         <div class="col-md-3 padding-top-slim">
                             <input name="monthDay" type="number" class="form-control" ng-disabled="uiState.yearlyRepeatOption != 'month'"
-                                   ng-model="uiState.monthDay" min="1" max="31" ng-change="resetError('scheduler_monthDay_error')">
-                            <div class="error" ng-show="scheduler_monthDay_error">Must be between 1 and 31</div>
+                                   ng-model="uiState.monthDay" min="1" max="31">
+                            <div class="error" ng-show="scheduler_form.monthDay.$invalid">Must be between 1 and 31</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row option-pad-bottom" ng-show="uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'">
+            <div class="row option-pad-bottom" ng-if="uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'">
                 <div class="col-md-12">
                     <div class="form-group option-pad-left">
                         <div class="radio col-md-2">
@@ -140,20 +134,20 @@
                 </div>
             </div>
 
-            <div class="form-group option-pad-left option-pad-bottom" ng-show="uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'weekly'">
+            <div class="form-group option-pad-left option-pad-bottom" ng-if="uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'weekly'">
                 <label><span class="red-text">*</span> On Days</label>
                 <div class="input-group">
-                    <div class="btn-group" data-toggle="buttons-checkbox" id="weekdaySelect">
-                        <button type="button" class="btn btn-default" data-value="SU" ng-click="setWeekday($event,'su')">Sun</button>
-                        <button type="button" class="btn btn-default" data-value="MO" ng-click="setWeekday($event,'mo')">Mon</button>
-                        <button type="button" class="btn btn-default" data-value="TU" ng-click="setWeekday($event,'tu')">Tue</button>
-                        <button type="button" class="btn btn-default" data-value="WE" ng-click="setWeekday($event,'we')">Wed</button>
-                        <button type="button" class="btn btn-default" data-value="TH" ng-click="setWeekday($event,'th')">Thu</button>
-                        <button type="button" class="btn btn-default" data-value="FR" ng-click="setWeekday($event,'fr')">Fri</button>
-                        <button type="button" class="btn btn-default" data-value="SA" ng-click="setWeekday($event,'sa')">Sat</button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('su') !== -1}" ng-click="setWeekday('su')">Sun</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('mo') !== -1}" ng-click="setWeekday('mo')">Mon</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('tu') !== -1}" ng-click="setWeekday('tu')">Tue</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('we') !== -1}" ng-click="setWeekday('we')">Wed</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('th') !== -1}" ng-click="setWeekday('th')">Thu</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('fr') !== -1}" ng-click="setWeekday('fr')">Fri</button>
+                        <button type="button" class="btn btn-default" ng-class="{ 'active' : uiState.weekDays.indexOf('sa') !== -1}" ng-click="setWeekday('sa')">Sat</button>
                     </div>
                 </div>
-                <div class="error" ng-show="scheduler_weekDays_error">Select one or more days</div>
+                <div class="error" ng-show="uiState.weekDays.length == 0">Select one or more days</div>
             </div>
 
             <div class="row">
@@ -166,31 +160,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4" ng-show="uiState.schedulerEnd && uiState.schedulerEnd.value == 'after'">
+                <div class="col-md-4" ng-if="uiState.schedulerEnd && uiState.schedulerEnd.value == 'after'">
                     <div class="form-group no-label">
                         <div class="input-group">
-                            <input type="number" name="schedulerOccurrenceCount" class="form-control"
-                                   ng-model="uiState.schedulerOccurrenceCount" min="1" max="999" on-change="resetError('scheduler_occurrenceCount_error')">
+                            <input type="number" name="schedulerOccurrenceCount" class="form-control" ng-model="uiState.schedulerOccurrenceCount" min="1" max="999">
                             <span class="input-group-addon">Occurrence(s)</span>
                         </div>
-                        <div class="error" ng-show="scheduler_occurrenceCount_error">Provide a value between 1 and 999</div>
+                        <div class="error" ng-show="scheduler_form.schedulerOccurrenceCount.$invalid">Provide a value between 1 and 999</div>
                     </div>
                 </div>
-                <div class="col-md-4" ng-show="uiState.schedulerEnd && uiState.schedulerEnd.value == 'on'">
+                <div class="col-md-4" ng-if="uiState.schedulerEnd && uiState.schedulerEnd.value == 'on'">
                     <div class="form-group no-label">
 
-                        <input type="date" name="schedulerEndDt" id="schedulerEndDt" class="form-control " ng-model="schedulerEndDt" data-min-today="true" ng-change="resetError('scheduler_endDt_error')">
+                        <input type="date" name="schedulerEndDt" class="form-control" ng-model="uiState.schedulerEndDt" data-min-today="true" required>
 
-                        <div class="error" ng-show="scheduler_endDt_error">Provide a valid date</div>
+                        <div class="error" ng-show="scheduler_form.schedulerEndDt.$invalid">Provide a valid date</div>
                     </div>
                 </div>
             </div>
         </form>
-
-        <div id="scheduler-buttons" style="display:none;">
-            <button type="button" class="btn btn-default btn-sm" id="reset-button" ng-click="resetForm()"><i class="fa fa-undo"></i> Reset</button>
-            <button type="button" class="btn btn-primary btn-sm" id="save-button" ng-click="saveForm()"><i class="fa fa-check"></i> Save</button>
-        </div>
-
     </div><!-- col-md-12 -->
 </div><!-- row -->

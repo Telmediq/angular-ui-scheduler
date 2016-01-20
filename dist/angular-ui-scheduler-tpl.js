@@ -13,8 +13,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-5\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label><span class=\"red-text\">*</span> Start Date <span class=\"fmt-help\"> mm/dd/yyyy</span></label>\n" +
-    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" ng-model=\"uiState.schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required\n" +
-    "                               ng-change=\"scheduleTimeChange()\">\n" +
+    "                        <input type=\"date\" class=\"form-control\" name=\"schedulerStartDt\" ng-model=\"uiState.schedulerStartDt\" placeholder=\"mm/dd/yyyy\" required>\n" +
     "\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -26,14 +25,8 @@ module.run(["$templateCache", function($templateCache) {
     "                            <span>:</span><input name=\"schedulerStartMinute\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartMinute\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required>\n" +
     "                            <span>:</span><input name=\"schedulerStartSecond\" type=\"number\" class=\"form-control\" ng-model=\"schedulerStartSecond\" ng-model-options=\"{ getterSetter: true }\" min=\"0\" max=\"59\" required>\n" +
     "                        </div>\n" +
-    "                        <div class=\"error\" ng-show=\"scheduler_startTime_error\">Time must be in HH24:MM:SS format</div>\n" +
+    "                        <div class=\"error\" ng-show=\"scheduler_form.schedulerStartHour.$invalid || scheduler_form.schedulerStartMinute.$invalid ||scheduler_form.schedulerStartSecond.$invalid \">Time must be in HH24:MM:SS format</div>\n" +
     "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "            <div class=\"row error-pull-up\" ng-if=\"!hideStart\">\n" +
-    "                <div class=\"col-md-12\">\n" +
-    "                    <div class=\"error\" ng-show=\"scheduler_form_schedulerStartDt_error\" ng-bind=\"scheduler_form_schedulerStartDt_error\"></div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
@@ -41,8 +34,8 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-4\" ng-show=\"schedulerShowTimeZone\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label>Local Time Zone</label>\n" +
-    "                        <select name=\"schedulerTimeZone\" id=\"schedulerTimeZone\" ng-model=\"schedulerTimeZone\" ng-options=\"z.name for z in timeZones\"\n" +
-    "                                required class=\"form-control \" ng-change=\"scheduleTimeChange()\"></select>\n" +
+    "                        <select name=\"schedulerTimeZone\" ng-model=\"schedulerTimeZone\" ng-options=\"z.name for z in timeZones\"\n" +
+    "                                required class=\"form-control \"></select>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
@@ -53,20 +46,21 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"form-group\">\n" +
     "                        <label>Repeat frequency</label>\n" +
     "                        <select name=\"schedulerFrequency\" ng-model=\"uiState.schedulerFrequency\"\n" +
-    "                                ng-options=\"f.name for f in frequencyOptions\" required class=\"form-control \"\n" +
-    "                                ng-change=\"scheduleRepeatChange()\"></select>\n" +
+    "                                ng-options=\"f.name for f in frequencyOptions\" required class=\"form-control\">\n" +
+    "\n" +
+    "                        </select>\n" +
     "                    </div>\n" +
-    "                    <div class=\"error\" ng-show=\"sheduler_frequency_error\"></div>\n" +
+    "                    <div class=\"error\" ng-show=\"scheduler_form.schedulerFrequency.$invalid\"></div>\n" +
     "                </div>\n" +
     "                <div class=\"col-md-4\">\n" +
     "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
     "                        <label>Every</label>\n" +
     "                        <div class=\"input-group\">\n" +
     "                            <input name=\"schedulerInterval\" type=\"number\" class=\"form-control\"\n" +
-    "                                   ng-model=\"uiState.schedulerInterval\" min=\"1\" max=\"999\" ng-change=\"resetError('scheduler_interval_error')\">\n" +
+    "                                   ng-model=\"uiState.schedulerInterval\" min=\"1\" max=\"999\">\n" +
     "                            <span class=\"input-group-addon\" ng-bind=\"schedulerIntervalLabel\"></span>\n" +
     "                        </div>\n" +
-    "                        <div class=\"error\" ng-show=\"scheduler_interval_error\">Provide a value between 1 and 999</div>\n" +
+    "                        <div class=\"error\" ng-show=\"scheduler_form.schedulerInterval.$invalid\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -79,8 +73,8 @@ module.run(["$templateCache", function($templateCache) {
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
     "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"uiState.monthlyRepeatOption != 'day'\"\n" +
-    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
-    "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
+    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\">\n" +
+    "                            <div class=\"error\" ng-show=\"scheduler_form.monthDay.$invalid\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -117,14 +111,14 @@ module.run(["$templateCache", function($templateCache) {
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
     "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"uiState.yearlyRepeatOption != 'month'\"\n" +
-    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\" ng-change=\"resetError('scheduler_monthDay_error')\">\n" +
-    "                            <div class=\"error\" ng-show=\"scheduler_monthDay_error\">Must be between 1 and 31</div>\n" +
+    "                                   ng-model=\"uiState.monthDay\" min=\"1\" max=\"31\">\n" +
+    "                            <div class=\"error\" ng-show=\"scheduler_form.monthDay.$invalid\">Must be between 1 and 31</div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"row option-pad-bottom\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'\">\n" +
+    "            <div class=\"row option-pad-bottom\" ng-if=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'yearly'\">\n" +
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
@@ -146,20 +140,20 @@ module.run(["$templateCache", function($templateCache) {
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"form-group option-pad-left option-pad-bottom\" ng-show=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'weekly'\">\n" +
+    "            <div class=\"form-group option-pad-left option-pad-bottom\" ng-if=\"uiState.schedulerFrequency && uiState.schedulerFrequency.value == 'weekly'\">\n" +
     "                <label><span class=\"red-text\">*</span> On Days</label>\n" +
     "                <div class=\"input-group\">\n" +
-    "                    <div class=\"btn-group\" data-toggle=\"buttons-checkbox\" id=\"weekdaySelect\">\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"SU\" ng-click=\"setWeekday($event,'su')\">Sun</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"MO\" ng-click=\"setWeekday($event,'mo')\">Mon</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"TU\" ng-click=\"setWeekday($event,'tu')\">Tue</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"WE\" ng-click=\"setWeekday($event,'we')\">Wed</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"TH\" ng-click=\"setWeekday($event,'th')\">Thu</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"FR\" ng-click=\"setWeekday($event,'fr')\">Fri</button>\n" +
-    "                        <button type=\"button\" class=\"btn btn-default\" data-value=\"SA\" ng-click=\"setWeekday($event,'sa')\">Sat</button>\n" +
+    "                    <div class=\"btn-group\">\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('su') !== -1}\" ng-click=\"setWeekday('su')\">Sun</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('mo') !== -1}\" ng-click=\"setWeekday('mo')\">Mon</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('tu') !== -1}\" ng-click=\"setWeekday('tu')\">Tue</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('we') !== -1}\" ng-click=\"setWeekday('we')\">Wed</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('th') !== -1}\" ng-click=\"setWeekday('th')\">Thu</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('fr') !== -1}\" ng-click=\"setWeekday('fr')\">Fri</button>\n" +
+    "                        <button type=\"button\" class=\"btn btn-default\" ng-class=\"{ 'active' : uiState.weekDays.indexOf('sa') !== -1}\" ng-click=\"setWeekday('sa')\">Sat</button>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"error\" ng-show=\"scheduler_weekDays_error\">Select one or more days</div>\n" +
+    "                <div class=\"error\" ng-show=\"uiState.weekDays.length == 0\">Select one or more days</div>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"row\">\n" +
@@ -172,32 +166,25 @@ module.run(["$templateCache", function($templateCache) {
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\" ng-show=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'after'\">\n" +
+    "                <div class=\"col-md-4\" ng-if=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'after'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "                        <div class=\"input-group\">\n" +
-    "                            <input type=\"number\" name=\"schedulerOccurrenceCount\" class=\"form-control\"\n" +
-    "                                   ng-model=\"uiState.schedulerOccurrenceCount\" min=\"1\" max=\"999\" on-change=\"resetError('scheduler_occurrenceCount_error')\">\n" +
+    "                            <input type=\"number\" name=\"schedulerOccurrenceCount\" class=\"form-control\" ng-model=\"uiState.schedulerOccurrenceCount\" min=\"1\" max=\"999\">\n" +
     "                            <span class=\"input-group-addon\">Occurrence(s)</span>\n" +
     "                        </div>\n" +
-    "                        <div class=\"error\" ng-show=\"scheduler_occurrenceCount_error\">Provide a value between 1 and 999</div>\n" +
+    "                        <div class=\"error\" ng-show=\"scheduler_form.schedulerOccurrenceCount.$invalid\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"col-md-4\" ng-show=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'on'\">\n" +
+    "                <div class=\"col-md-4\" ng-if=\"uiState.schedulerEnd && uiState.schedulerEnd.value == 'on'\">\n" +
     "                    <div class=\"form-group no-label\">\n" +
     "\n" +
-    "                        <input type=\"date\" name=\"schedulerEndDt\" id=\"schedulerEndDt\" class=\"form-control \" ng-model=\"schedulerEndDt\" data-min-today=\"true\" ng-change=\"resetError('scheduler_endDt_error')\">\n" +
+    "                        <input type=\"date\" name=\"schedulerEndDt\" class=\"form-control\" ng-model=\"uiState.schedulerEndDt\" data-min-today=\"true\" required>\n" +
     "\n" +
-    "                        <div class=\"error\" ng-show=\"scheduler_endDt_error\">Provide a valid date</div>\n" +
+    "                        <div class=\"error\" ng-show=\"scheduler_form.schedulerEndDt.$invalid\">Provide a valid date</div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </form>\n" +
-    "\n" +
-    "        <div id=\"scheduler-buttons\" style=\"display:none;\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default btn-sm\" id=\"reset-button\" ng-click=\"resetForm()\"><i class=\"fa fa-undo\"></i> Reset</button>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary btn-sm\" id=\"save-button\" ng-click=\"saveForm()\"><i class=\"fa fa-check\"></i> Save</button>\n" +
-    "        </div>\n" +
-    "\n" +
     "    </div><!-- col-md-12 -->\n" +
     "</div><!-- row -->\n" +
     "");

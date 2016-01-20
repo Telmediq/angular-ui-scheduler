@@ -59,46 +59,7 @@ angular.module('angular-ui-scheduler')
         };
         //endregion
 
-        $scope.setDefaults = function () {
-            $scope.scheduleTimeChange();
-            $scope.scheduleRepeatChange();
-        };
-
-        $scope.scheduleTimeChange = function () {
-            if (angular_ui_scheduler_useTimezone) {
-                $scope.resetStartDate();
-                try {
-                    $scope.scheduler_form_schedulerStartDt_error = false;
-                    $scope.scheduler_startTime_error = false;
-                }
-                catch (e) {
-                    $scope.startDateError('Provide a valid start date and time');
-                }
-            }
-            else {
-                $scope.scheduler_startTime_error = false;
-                $scope.scheduler_form_schedulerStartDt_error = false;
-            }
-        };
-
-        $scope.scheduleRepeatChange = function () {
-            if ($scope.uiState.schedulerFrequency && $scope.uiState.schedulerFrequency.value !== '' && $scope.uiState.schedulerFrequency.value !== 'none') {
-                $scope.uiState.schedulerInterval = 1;
-                $scope.schedulerShowInterval = true;
-                $scope.schedulerIntervalLabel = $scope.uiState.schedulerFrequency.intervalLabel;
-            }
-            else {
-                $scope.schedulerShowInterval = false;
-                $scope.uiState.schedulerEnd = $scope.endOptions[0];
-            }
-            $scope.sheduler_frequency_error = false;
-        };
-
-        $scope.resetError = function (variable) {
-            $scope[variable] = false;
-        };
-
-        $scope.setWeekday = function (event, day) {
+        $scope.setWeekday = function (day) {
             // Add or remove day when user clicks checkbox button
             var i = $scope.uiState.weekDays.indexOf(day);
             if (i >= 0) {
@@ -107,31 +68,6 @@ angular.module('angular-ui-scheduler')
             else {
                 $scope.uiState.weekDays.push(day);
             }
-            $(event.target).blur();
-            $scope.scheduler_weekDays_error = false;
-        };
-
-        $scope.startDateError = function (msg) {
-            $scope.scheduler_form_schedulerStartDt_error = msg;
-        };
-
-        $scope.resetStartDate = function () {
-            $scope.scheduler_form_schedulerStartDt_error = '';
-        };
-
-        $scope.schedulerEndChange = function () {
-            $scope.uiState.schedulerOccurrenceCount = 1;
-        };
-
-        // Clear custom field errors
-        $scope.clearErrors = function () {
-            $scope.scheduler_weekDays_error = false;
-            $scope.scheduler_endDt_error = false;
-            $scope.resetStartDate();
-            $scope.scheduler_endDt_error = false;
-            $scope.scheduler_interval_error = false;
-            $scope.scheduler_occurrenceCount_error = false;
-            $scope.scheduler_monthDay_error = false;
         };
 
         // Set values for detail page
@@ -192,7 +128,6 @@ angular.module('angular-ui-scheduler')
         $scope.setRRule = function (rule) {
             $scope.clear();
             rRuleHelper.setRule(rule, $scope.uiState);
-            $scope.scheduleRepeatChange();
         };
 
         $scope.setStartDate = function (startDate) {
@@ -201,11 +136,6 @@ angular.module('angular-ui-scheduler')
 
         // Clear the form, returning all elements to a default state
         $scope.clear = function () {
-            $scope.clearErrors();
-            $scope.setDefaults();
-        };
-
-        function init() {
             $scope.uiState = {
                 weekDays: [],
                 schedulerStartDt: new Date(),
@@ -228,16 +158,30 @@ angular.module('angular-ui-scheduler')
             if (angular_ui_scheduler_useTimezone) {
                 $scope.timeZones = moment.tz.names();
             }
-            $scope.setDefaults();
-        }
+        };
 
-        init();
+        $scope.clear();
 
         //update role
         $scope.$watch('uiState', function (state) {
             $scope.rule = $scope.getValue();
         }, true);
 
+        $scope.$watch('uiState.schedulerFrequency', function (newVal) {
+            if (newVal && newVal.value !== '' && newVal.value !== 'none') {
+                $scope.uiState.schedulerInterval = 1;
+                $scope.schedulerShowInterval = true;
+                $scope.schedulerIntervalLabel = $scope.uiState.schedulerFrequency.intervalLabel;
+            }
+            else {
+                $scope.schedulerShowInterval = false;
+                $scope.uiState.schedulerEnd = $scope.endOptions[0];
+            }
+        });
+
+        $scope.$watch('uiState.schedulerEnd', function () {
+            $scope.uiState.schedulerOccurrenceCount = 1;
+        });
     }]);
 
 /**
@@ -396,7 +340,7 @@ angular.module('angular-ui-scheduler')
                     options.occurrenceCount = scope.schedulerOccurrenceCount;
                 }
                 if (scope.schedulerEnd.value === 'on') {
-                    options.endDate = moment(scope.schedulerStartDt).add(1, 'd').toDate();
+                    options.endDate = scope.schedulerEndDt;
                 }
                 if (scope.schedulerFrequency.value === 'weekly') {
                     options.weekDays = scope.weekDays;
@@ -580,7 +524,6 @@ angular.module('angular-ui-scheduler')
                                 for (var j = 0; j < days.length; j++) {
                                     if (_.contains(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
                                         params.weekDays.push(days[j].toLowerCase());
-                                        params['weekDay' + days[j].toUpperCase() + 'Class'] = 'active'; //activate related button
                                     }
                                     else {
                                         throw 'BYDAY contains unrecognized day value(s)';
