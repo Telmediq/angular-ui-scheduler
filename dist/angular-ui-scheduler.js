@@ -285,7 +285,9 @@ angular.module('angular-ui-scheduler')
                     if (newVal) {
                         $log.debug('setting rrule', newVal);
                         scope.setRRule(newVal);
-                        scope.setStartDate(scope.startDate);
+                        if (scope.startDate) {
+                            scope.setStartDate(scope.startDate);
+                        }
                     }
                 });
 

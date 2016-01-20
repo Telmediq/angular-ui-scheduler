@@ -31,7 +31,7 @@ module.run(["$templateCache", function($templateCache) {
     "            </div>\n" +
     "\n" +
     "            <div class=\"row\">\n" +
-    "                <div class=\"col-md-4\" ng-show=\"schedulerShowTimeZone\">\n" +
+    "                <div class=\"col-md-4\" ng-if=\"schedulerShowTimeZone\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label>Local Time Zone</label>\n" +
     "                        <select name=\"schedulerTimeZone\" ng-model=\"schedulerTimeZone\" ng-options=\"z.name for z in timeZones\"\n" +

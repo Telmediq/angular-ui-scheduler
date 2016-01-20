@@ -1,6 +1,6 @@
 {
   "name": "angular-ui-scheduler",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "devDependencies": {
     "event-stream": "3.3.2",
     "gulp": "3.9.0",

@@ -25,7 +25,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-4" ng-show="schedulerShowTimeZone">
+                <div class="col-md-4" ng-if="schedulerShowTimeZone">
                     <div class="form-group">
                         <label>Local Time Zone</label>
                         <select name="schedulerTimeZone" ng-model="schedulerTimeZone" ng-options="z.name for z in timeZones"
