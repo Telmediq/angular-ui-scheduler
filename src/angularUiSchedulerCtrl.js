@@ -164,17 +164,15 @@ angular.module('angular-ui-scheduler')
             $scope.rule = $scope.getValue();
         }, true);
 
-        $scope.$watch('uiState.schedulerFrequency', function (newVal) {
-            if (newVal && newVal.value !== '' && newVal.value !== 'none') {
+        $scope.scheduleRepeatChange = function () {
+            $log.debug('schedule repeat change');
+            if ($scope.uiState.schedulerFrequency && $scope.uiState.schedulerFrequency.value !== '' && $scope.uiState.schedulerFrequency.value !== 'none') {
                 $scope.uiState.schedulerInterval = 1;
-                $scope.schedulerShowInterval = true;
-                $scope.schedulerIntervalLabel = $scope.uiState.schedulerFrequency.intervalLabel;
             }
             else {
-                $scope.schedulerShowInterval = false;
                 $scope.uiState.schedulerEnd = $scope.endOptions[0];
             }
-        });
+        };
 
         $scope.$watch('uiState.schedulerEnd', function () {
             $scope.uiState.schedulerOccurrenceCount = 1;

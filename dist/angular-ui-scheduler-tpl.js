@@ -45,7 +45,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-4\">\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <label>Repeat frequency</label>\n" +
-    "                        <select name=\"schedulerFrequency\" ng-model=\"uiState.schedulerFrequency\"\n" +
+    "                        <select name=\"schedulerFrequency\" ng-model=\"uiState.schedulerFrequency\" ng-change=\"scheduleRepeatChange()\"\n" +
     "                                ng-options=\"f.name for f in frequencyOptions\" required class=\"form-control\">\n" +
     "\n" +
     "                        </select>\n" +
@@ -53,12 +53,12 @@ module.run(["$templateCache", function($templateCache) {
     "                    <div class=\"error\" ng-show=\"scheduler_form.schedulerFrequency.$invalid\"></div>\n" +
     "                </div>\n" +
     "                <div class=\"col-md-4\">\n" +
-    "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
+    "                    <div class=\"form-group\" ng-show=\"uiState.schedulerFrequency.value !== 'none'\">\n" +
     "                        <label>Every</label>\n" +
     "                        <div class=\"input-group\">\n" +
     "                            <input name=\"schedulerInterval\" type=\"number\" class=\"form-control\"\n" +
     "                                   ng-model=\"uiState.schedulerInterval\" min=\"1\" max=\"999\">\n" +
-    "                            <span class=\"input-group-addon\" ng-bind=\"schedulerIntervalLabel\"></span>\n" +
+    "                            <span class=\"input-group-addon\" ng-bind=\"uiState.schedulerFrequency.intervalLabel\"></span>\n" +
     "                        </div>\n" +
     "                        <div class=\"error\" ng-show=\"scheduler_form.schedulerInterval.$invalid\">Provide a value between 1 and 999</div>\n" +
     "                    </div>\n" +
@@ -69,7 +69,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"uiState.monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on day</label>\n" +
+    "                            <label><input type=\"radio\" value=\"day\" ng-model=\"uiState.monthlyRepeatOption\" name=\"monthlyRepeatOption\"> on day</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\" style=\"padding-top:5px\">\n" +
     "                            <input name=\"monthDay\" type=\"number\" class=\"form-control\" ng-disabled=\"uiState.monthlyRepeatOption != 'day'\"\n" +
@@ -84,7 +84,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.monthlyRepeatOption\" ng-change=\"monthlyRepeatChange()\" name=\"monthlyRepeatOption\"> on\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.monthlyRepeatOption\" name=\"monthlyRepeatOption\"> on\n" +
     "                                the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3\">\n" +
@@ -103,7 +103,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"uiState.yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on</label>\n" +
+    "                            <label><input type=\"radio\" value=\"month\" ng-model=\"uiState.yearlyRepeatOption\" name=\"yearlyRepeatOption\"> on</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-3 padding-top-slim\">\n" +
     "                            <select name=\"yearlyMonth\" ng-model=\"uiState.yearlyMonth\" ng-options=\"m.name for m in months\"\n" +
@@ -122,7 +122,7 @@ module.run(["$templateCache", function($templateCache) {
     "                <div class=\"col-md-12\">\n" +
     "                    <div class=\"form-group option-pad-left\">\n" +
     "                        <div class=\"radio col-md-2\">\n" +
-    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.yearlyRepeatOption\" ng-change=\"yearlyRepeatChange()\" name=\"yearlyRepeatOption\"> on the</label>\n" +
+    "                            <label><input type=\"radio\" value=\"other\" ng-model=\"uiState.yearlyRepeatOption\" name=\"yearlyRepeatOption\"> on the</label>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-md-2 padding-top-slim\">\n" +
     "                            <select name=\"yearlyOccurrence\" ng-model=\"uiState.yearlyOccurrence\" ng-options=\"o.name for o in occurrences\"\n" +
@@ -158,7 +158,7 @@ module.run(["$templateCache", function($templateCache) {
     "\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-md-4\">\n" +
-    "                    <div class=\"form-group\" ng-show=\"schedulerShowInterval\">\n" +
+    "                    <div class=\"form-group\" ng-show=\"uiState.schedulerFrequency.value !== 'none'\">\n" +
     "                        <label>End</label>\n" +
     "                        <div>\n" +
     "                            <select name=\"schedulerEnd\" ng-model=\"uiState.schedulerEnd\" ng-options=\"e.name for e in endOptions\" required class=\"form-control \"\n" +

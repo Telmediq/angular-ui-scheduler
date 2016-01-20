@@ -39,7 +39,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Repeat frequency</label>
-                        <select name="schedulerFrequency" ng-model="uiState.schedulerFrequency"
+                        <select name="schedulerFrequency" ng-model="uiState.schedulerFrequency" ng-change="scheduleRepeatChange()"
                                 ng-options="f.name for f in frequencyOptions" required class="form-control">
 
                         </select>
@@ -47,12 +47,12 @@
                     <div class="error" ng-show="scheduler_form.schedulerFrequency.$invalid"></div>
                 </div>
                 <div class="col-md-4">
-                    <div class="form-group" ng-show="schedulerShowInterval">
+                    <div class="form-group" ng-show="uiState.schedulerFrequency.value !== 'none'">
                         <label>Every</label>
                         <div class="input-group">
                             <input name="schedulerInterval" type="number" class="form-control"
                                    ng-model="uiState.schedulerInterval" min="1" max="999">
-                            <span class="input-group-addon" ng-bind="schedulerIntervalLabel"></span>
+                            <span class="input-group-addon" ng-bind="uiState.schedulerFrequency.intervalLabel"></span>
                         </div>
                         <div class="error" ng-show="scheduler_form.schedulerInterval.$invalid">Provide a value between 1 and 999</div>
                     </div>
@@ -63,7 +63,7 @@
                 <div class="col-md-12">
                     <div class="form-group option-pad-left">
                         <div class="radio col-md-2">
-                            <label><input type="radio" value="day" ng-model="uiState.monthlyRepeatOption" ng-change="monthlyRepeatChange()" name="monthlyRepeatOption"> on day</label>
+                            <label><input type="radio" value="day" ng-model="uiState.monthlyRepeatOption" name="monthlyRepeatOption"> on day</label>
                         </div>
                         <div class="col-md-3" style="padding-top:5px">
                             <input name="monthDay" type="number" class="form-control" ng-disabled="uiState.monthlyRepeatOption != 'day'"
@@ -78,7 +78,7 @@
                 <div class="col-md-12">
                     <div class="form-group option-pad-left">
                         <div class="radio col-md-2">
-                            <label><input type="radio" value="other" ng-model="uiState.monthlyRepeatOption" ng-change="monthlyRepeatChange()" name="monthlyRepeatOption"> on
+                            <label><input type="radio" value="other" ng-model="uiState.monthlyRepeatOption" name="monthlyRepeatOption"> on
                                 the</label>
                         </div>
                         <div class="col-md-3">
@@ -97,7 +97,7 @@
                 <div class="col-md-12">
                     <div class="form-group option-pad-left">
                         <div class="radio col-md-2">
-                            <label><input type="radio" value="month" ng-model="uiState.yearlyRepeatOption" ng-change="yearlyRepeatChange()" name="yearlyRepeatOption"> on</label>
+                            <label><input type="radio" value="month" ng-model="uiState.yearlyRepeatOption" name="yearlyRepeatOption"> on</label>
                         </div>
                         <div class="col-md-3 padding-top-slim">
                             <select name="yearlyMonth" ng-model="uiState.yearlyMonth" ng-options="m.name for m in months"
@@ -116,7 +116,7 @@
                 <div class="col-md-12">
                     <div class="form-group option-pad-left">
                         <div class="radio col-md-2">
-                            <label><input type="radio" value="other" ng-model="uiState.yearlyRepeatOption" ng-change="yearlyRepeatChange()" name="yearlyRepeatOption"> on the</label>
+                            <label><input type="radio" value="other" ng-model="uiState.yearlyRepeatOption" name="yearlyRepeatOption"> on the</label>
                         </div>
                         <div class="col-md-2 padding-top-slim">
                             <select name="yearlyOccurrence" ng-model="uiState.yearlyOccurrence" ng-options="o.name for o in occurrences"
@@ -152,7 +152,7 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <div class="form-group" ng-show="schedulerShowInterval">
+                    <div class="form-group" ng-show="uiState.schedulerFrequency.value !== 'none'">
                         <label>End</label>
                         <div>
                             <select name="schedulerEnd" ng-model="uiState.schedulerEnd" ng-options="e.name for e in endOptions" required class="form-control "
