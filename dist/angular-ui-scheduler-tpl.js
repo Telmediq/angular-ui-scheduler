@@ -162,7 +162,7 @@ module.run(["$templateCache", function($templateCache) {
     "                        <label>End</label>\n" +
     "                        <div>\n" +
     "                            <select name=\"schedulerEnd\" ng-model=\"uiState.schedulerEnd\" ng-options=\"e.name for e in endOptions\" required class=\"form-control \"\n" +
-    "                                    ng-change=\"schedulerEndChange()\"></select>\n" +
+    "                                    ng-change=\"schedulerEndChange()\" ng-change=\"schedulerEndChange()\"></select>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +

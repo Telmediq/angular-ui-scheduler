@@ -174,7 +174,7 @@ angular.module('angular-ui-scheduler')
             }
         };
 
-        $scope.$watch('uiState.schedulerEnd', function () {
+        $scope.schedulerEndChange = function () {
             $scope.uiState.schedulerOccurrenceCount = 1;
-        });
+        };
     });
