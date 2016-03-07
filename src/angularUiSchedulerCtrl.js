@@ -129,6 +129,7 @@ angular.module('angular-ui-scheduler')
 
         $scope.setStartDate = function (startDate) {
             $scope.uiState.schedulerStartDt = startDate;
+            $scope.uiState.schedulerEndDt = moment(startDate).endOf('week').toDate();
         };
 
         // Clear the form, returning all elements to a default state
@@ -148,8 +149,8 @@ angular.module('angular-ui-scheduler')
                 yearlyMonth: $scope.months[0],
                 yearlyWeekDay: $scope.weekdays[0],
                 yearlyOtherMonth: $scope.months[0],
-                yearlyOccurrence: $scope.occurrences[0]
-                //schedulerEndDt: undefined
+                yearlyOccurrence: $scope.occurrences[0],
+                schedulerEndDt: moment().endOf('week').toDate()
             };
 
             if (angular_ui_scheduler_useTimezone) {
