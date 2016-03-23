@@ -522,7 +522,7 @@ angular.module('angular-ui-scheduler')
                                 var days = value.split(/,/);
                                 params.weekDays = [];
                                 for (var j = 0; j < days.length; j++) {
-                                    if (_.contains(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
+                                    if (_.includes(['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'], days[j])) {
                                         params.weekDays.push(days[j].toLowerCase());
                                     }
                                     else {
